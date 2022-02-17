@@ -48,6 +48,14 @@ export const usuarioSchema = new Schema({
         trim: true
     },
 
+    permisos: [
+        {
+            type: String,
+            uppercase: true,
+            trim: true
+        }
+    ],
+
     lugar: {
         type: Schema.Types.ObjectId,
         require: 'El lugar es obligatorio',

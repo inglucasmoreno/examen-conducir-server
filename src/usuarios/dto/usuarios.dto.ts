@@ -21,6 +21,8 @@ export class UsuarioDTO {
     
     readonly role: string;
 
+    readonly permisos: string[];
+
     lugar: string;
     
     readonly activo: boolean;

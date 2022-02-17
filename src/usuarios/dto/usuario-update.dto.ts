@@ -14,6 +14,8 @@ export class UsuarioUpdateDTO {
     readonly email: string;
     
     readonly role: string;
+
+    permisos: string[];
     
     lugar: string;
 
