@@ -54,6 +54,7 @@ export class InicializacionService {
             nombre: 'Admin',
             dni: '34060399',
             lugar: lugar._id,
+            permisos: [],
             email: 'admin@gmail.com',
             role: 'ADMIN_ROLE',
             activo: true

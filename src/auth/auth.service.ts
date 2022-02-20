@@ -36,9 +36,9 @@ export class AuthService {
             nombre: user._doc.nombre,
             lugar: String(user._doc.lugar),
             lugar_descripcion: lugar_descripcion.descripcion,
+            permisos: user._doc.permisos,
             role: user._doc.role
         };
-        console.log(payload);
         return {
             token: this.jwtService.sign(payload)
         }
