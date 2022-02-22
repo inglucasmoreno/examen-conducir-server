@@ -4,6 +4,7 @@ export const imagenSchema = new Schema({
 
     descripcion: {
         type: String,
+        uppercase: true,
         require: 'La descripcion es un campo obligatorio'
     },
 

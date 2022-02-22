@@ -57,7 +57,6 @@ export class ImagenesController {
       };
       
       const imagen = await this.imagenesService.nuevaImagen(data);
-      console.log(imagen);
 
       return {
          msg: `Archivo ${file.filename} cargado correctamente`

@@ -42,11 +42,38 @@ export class UsuariosService {
         
         const {columna, direccion} = querys;
 
-        // Ordenar
-        let ordenar = [columna || 'apellido', direccion || 1];
+        // Filtrado
+        let pipeline = [];
+        
+        pipeline.push({ $match: {} });
 
-        const usuarios = await this.usuariosModel.find()
-                                                 .sort([ordenar]);
+        // Join (Lugares)
+        pipeline.push(
+            { $lookup: { // Lookup - Lugares
+                from: 'lugares',
+                localField: 'lugar',
+                foreignField: '_id',
+                as: 'lugar'
+            }},
+        );
+
+        pipeline.push({ $unwind: '$lugar' });
+
+        // Ordenando datos
+        const ordenar: any = {};
+        if(columna){
+            ordenar[String(columna)] = Number(direccion); 
+            pipeline.push({$sort: ordenar});
+        } 
+  
+        // Ordenar
+        // let ordenar = [columna || 'apellido', direccion || 1];
+
+        // const usuarios = await this.usuariosModel.find()
+        //                                          .sort([ordenar]);
+
+        const usuarios = await this.usuariosModel.aggregate(pipeline);
+
         return usuarios;
     }  
 
