@@ -6,12 +6,14 @@ import { ExamenDTO } from './dto/examenes.dto';
 import { IExamen } from './interface/examenes.interface';
 import { IPregunta } from 'src/preguntas/interface/preguntas.interface';
 import { IEstPreguntas } from 'src/estadisticas/interface/est-preguntas.interface';
+import { IRectivacion } from './interface/reactivaciones.interface';
 
 @Injectable()
 export class ExamenesService {
 
     constructor(@InjectModel('Examen') private readonly examenModel: Model<IExamen>,
                 @InjectModel('Est-preguntas') private readonly estPreguntasModel: Model<IEstPreguntas>,
+                @InjectModel('Reactivacion') private readonly reactivacionModel: Model<IRectivacion>,
                 @InjectModel('Pregunta') private readonly preguntaModel: Model<IPregunta>){}
 
     // Examen por ID
@@ -286,6 +288,65 @@ export class ExamenesService {
         return examen;
     }
 
+    // Listar examenes
+    async listarReactivaciones(examenID: any, querys: any): Promise<IExamen[]> {
+        
+        const {columna, direccion} = querys;
+    
+        const pipeline = [];
+        pipeline.push({$match: { examen: new mongoose.Types.ObjectId(examenID) }});
+        
+        // Join (usuarios) 
+        pipeline.push(
+            { $lookup: { // Lookup - usuarios
+                from: 'usuarios',
+                localField: 'usuario',
+                foreignField: '_id',
+                as: 'usuario'
+            }},
+        );
+        pipeline.push({ $unwind: '$usuario' });
+    
+        // Ordenando datos
+        const ordenar: any = {};
+        if(columna){
+            ordenar[String(columna)] = Number(direccion); 
+            pipeline.push({$sort: ordenar});
+        } 
+    
+        const reactivaciones = await this.reactivacionModel.aggregate(pipeline);
+    
+        return reactivaciones;
+    
+    }  
+    
+    // Reactivar examen
+    async reactivarExamen(id: string, examenUpdateDTO: any): Promise<IExamen> {
+
+        const { usuario, tiempo, motivo } = examenUpdateDTO;
+        
+        // console.log(persona);
+
+        // Se verifica si no hay un examen activo para esta persona
+        // const examenExiste = await this.examenModel.findOne({ persona });
+        // if(examenExiste) throw new NotFoundException('Ya existe un examen habilitado para esta persona');
+
+        // Actualizacion de datos de examen
+        const examen = await this.examenModel.findByIdAndUpdate(id, examenUpdateDTO, {new: true});
+        
+        // Se crea documento en tabla de reactivacion de examenes
+        const reactivacion = new this.reactivacionModel({
+            examen: id,
+            usuario,
+            motivo,
+            tiempo,
+        });
+
+        await reactivacion.save();
+
+        return examen;
+    }
+
     // Finalizar examen
     async finalizarExamen(id: string, examenUpdateDTO: any): Promise<IExamen> {
          
@@ -321,7 +382,7 @@ export class ExamenesService {
     
          return examenUpdateDTO;
 
-        }
+    }
 
     // Eliminar examen
     async eliminarExamen(id: string): Promise<IExamen> {

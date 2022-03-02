@@ -23,9 +23,15 @@ export class ExamenUpdateDTO {
 
     fecha_rindiendo: Date;
 
+    fecha_finalizacion: Date;
+
     readonly persona: number;
 
     readonly nota: number;
+
+    readonly reactivado: boolean;
+
+    readonly tiempo: number;
     
     cantidad_respuestas_correctas: number;
     

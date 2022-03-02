@@ -30,9 +30,16 @@ export class ExamenDTO {
     readonly fecha_rindiendo: Date;
 
     // @IsNotEmpty()
+    readonly fecha_finalizacion: Date;
+
+    // @IsNotEmpty()
     readonly persona: string;
 
     readonly nota: number;
+
+    readonly reactivado: boolean;
+
+    readonly tiempo: number;
     
     readonly cantidad_respuestas_correctas: number;
     

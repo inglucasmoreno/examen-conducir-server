@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Po
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ExamenDTO } from './dto/examenes.dto';
 import { ExamenesService } from './examenes.service';
-
+import { add } from 'date-fns';
 @Controller('examenes')
 export class ExamenesController {
 
@@ -74,8 +74,21 @@ export class ExamenesController {
         
         let examenDTO;
 
-        const { activo } = examenUpdateDTO;
+        const { estado, tiempo, activo } = examenUpdateDTO;
+
+        // Examen a estado -> "Rindiendo" | Se agrega fecha de inicio y finalizacion del examen
+        if(estado === 'Rindiendo'){
+            
+            const fechaActual = new Date();
+            
+            const fechaFinalizacion = add(fechaActual, { minutes: Number(tiempo) });
+
+            examenUpdateDTO.fecha_rindiendo = fechaActual;
+            examenUpdateDTO.fecha_finalizacion = fechaFinalizacion;
+
+        } 
         
+        // Finalizar examen
         if(activo === false) examenDTO = await this.examenesService.finalizarExamen(examenID, examenUpdateDTO);
         else examenDTO = examenUpdateDTO;  
         
@@ -87,6 +100,31 @@ export class ExamenesController {
         });      
     
     
+    }
+
+    // Listar reactivaciones
+    @UseGuards(JwtAuthGuard)
+    @Get('/reactivar/:id')
+    async listarReactivaciones(@Res() res, @Query() querys, @Param('id') examenID) {
+        const reactivaciones = await this.examenesService.listarReactivaciones(examenID, querys);
+        res.status(HttpStatus.OK).json({
+            message: 'Listado de examenes correcto',
+            reactivaciones
+        });            
+    }
+
+
+    // Reactivar examen
+    @Put('/reactivar/:id')
+    async reactivarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID ) {
+        
+        const examen = await this.examenesService.reactivarExamen(examenID, examenUpdateDTO);
+        
+        res.status(HttpStatus.OK).json({
+            message: 'Examen reactivado correctamente',
+            examen
+        });      
+  
     }
 
     // Eliminar examen

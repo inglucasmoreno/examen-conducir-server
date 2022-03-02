@@ -50,7 +50,7 @@ export class ImagenesService {
         // Se va a dar de baja?
         if(activo !== undefined && activo === false){
             const pregunta = await this.preguntaModel.findOne({ imagen: id });
-            if(pregunta) throw new NotFoundException('Esta imagen esta asociada a una pregunta');             
+            if(pregunta) throw new NotFoundException('La imagen esta asociada a una pregunta');             
         }
         
         // Existe otra imagen con la misma descripcion?

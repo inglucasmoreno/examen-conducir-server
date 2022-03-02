@@ -1,6 +1,9 @@
 import { Document } from 'mongoose';
 
 export interface IExamen extends Document {
+
+    readonly _id: string;
+
     readonly usuario: string;
 
     readonly tipo_licencia: string;
@@ -18,10 +21,18 @@ export interface IExamen extends Document {
         seleccion_correcta: boolean
     }];
 
-    readonly _id: string;
+    readonly estado: string;
+
+    readonly fecha_rindiendo: Date;
+
+    readonly fecha_finalizacion: Date;
 
     readonly nota: number;
-    
+
+    readonly reactivado: boolean;
+
+    readonly tiempo: number;
+
     readonly cantidad_respuestas_correctas: number;
     
     readonly cantidad_respuestas_incorrectas: number;
@@ -39,4 +50,5 @@ export interface IExamen extends Document {
     readonly est_cantidad_correctas: number;
     
     readonly est_cantidad_incorrectas: number;
+
 }

@@ -57,9 +57,24 @@ export const examenSchema = new Schema({
         default: Date.now()
     },
 
+    fecha_finalizacion: {
+        type: Date,
+        default: Date.now()
+    },
+
     nota: {
         type: Number,
         default: 0
+    },
+
+    reactivado: {
+        type: Boolean,
+        default: false
+    },
+
+    tiempo : {
+        type: Number,
+        default: 30 
     },
 
     cantidad_respuestas_correctas: {
