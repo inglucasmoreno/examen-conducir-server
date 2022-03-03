@@ -323,13 +323,13 @@ export class ExamenesService {
     // Reactivar examen
     async reactivarExamen(id: string, examenUpdateDTO: any): Promise<IExamen> {
 
-        const { usuario, tiempo, motivo } = examenUpdateDTO;
+        const { usuario, persona, tiempo, motivo } = examenUpdateDTO;
         
-        // console.log(persona);
-
         // Se verifica si no hay un examen activo para esta persona
-        // const examenExiste = await this.examenModel.findOne({ persona });
-        // if(examenExiste) throw new NotFoundException('Ya existe un examen habilitado para esta persona');
+        const examenExiste = await this.examenModel.findOne({ persona, activo: true });
+        
+        // console.log(examenExiste);
+        if(examenExiste) throw new NotFoundException('Ya existe un examen habilitado para esta persona');
 
         // Actualizacion de datos de examen
         const examen = await this.examenModel.findByIdAndUpdate(id, examenUpdateDTO, {new: true});

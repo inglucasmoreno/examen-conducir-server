@@ -112,11 +112,10 @@ export class ExamenesController {
     async listarReactivaciones(@Res() res, @Query() querys, @Param('id') examenID) {
         const reactivaciones = await this.examenesService.listarReactivaciones(examenID, querys);
         res.status(HttpStatus.OK).json({
-            message: 'Listado de examenes correcto',
+            message: 'Listado de reactivaciones correcta',
             reactivaciones
         });            
     }
-
 
     // Reactivar examen
     @Put('/reactivar/:id')
