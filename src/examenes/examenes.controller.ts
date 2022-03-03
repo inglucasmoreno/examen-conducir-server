@@ -71,8 +71,8 @@ export class ExamenesController {
     // Actualizar examen
     @Put('/:id')
     async actualizarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID ) {
-        
-        let examenDTO;
+     
+        console.log('Llega');
 
         const { estado, tiempo, activo } = examenUpdateDTO;
 
@@ -88,12 +88,16 @@ export class ExamenesController {
 
         } 
         
-        // Finalizar examen
-        if(activo === false) examenDTO = await this.examenesService.finalizarExamen(examenID, examenUpdateDTO);
-        else examenDTO = examenUpdateDTO;  
-        
-        const examen = await this.examenesService.actualizarExamen(examenID, examenDTO);
-        
+        let examen;
+
+        // Finalizar examen?
+        if(activo === false){ 
+            const data = await this.examenesService.finalizarExamen(examenID, examenUpdateDTO);
+            examen = await this.examenesService.actualizarExamen(examenID, data); 
+        }else{
+            examen = await this.examenesService.actualizarExamen(examenID, examenUpdateDTO); 
+        }   
+                
         res.status(HttpStatus.OK).json({
             message: 'Examen actualizado correctamente',
             examen

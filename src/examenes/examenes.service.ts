@@ -349,7 +349,7 @@ export class ExamenesService {
 
     // Finalizar examen
     async finalizarExamen(id: string, examenUpdateDTO: any): Promise<IExamen> {
-         
+        
         const examenDB = await this.getExamen(id, '');
 
         // Se calcula el resultado del examen
