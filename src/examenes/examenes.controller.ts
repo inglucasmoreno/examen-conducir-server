@@ -38,7 +38,18 @@ export class ExamenesController {
         });        
     }
     
-    // Listar examens
+    // Listar examenes - Historial
+    @UseGuards(JwtAuthGuard)
+    @Post('/historial/listado')
+    async listarExamenesHistorial(@Res() res, @Query() querys, @Body() data) {
+        const examenes = await this.examenesService.listarExamenesHistorial(querys, data);
+        res.status(HttpStatus.OK).json({
+            message: 'Listado de examenes para historial correcto',
+            examenes
+        });            
+    }  
+
+    // Listar examenes - Hoy
     @UseGuards(JwtAuthGuard)
     @Get('/')
     async listarExamenes(@Res() res, @Query() querys) {
