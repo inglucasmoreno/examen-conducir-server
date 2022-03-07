@@ -39,6 +39,10 @@ export class ExamenDTO {
 
     readonly reactivado: boolean;
 
+    readonly baja_tiempo: boolean;
+
+    readonly baja_motivo: string;
+
     readonly tiempo: number;
     
     readonly cantidad_respuestas_correctas: number;

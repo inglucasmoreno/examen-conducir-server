@@ -60,6 +60,17 @@ export class ExamenesController {
         });            
     }
 
+    // Limpiar examenes antiguos
+    @UseGuards(JwtAuthGuard)
+    @Get('/limpiar/antiguos')
+    async limpiarExamenes(@Res() res){ 
+        const examenes = await this.examenesService.limpiarExamenes();
+        res.status(HttpStatus.OK).json({
+            message: 'Limpieza de examenes correcta',
+            examenes
+        });            
+    } 
+
     // Crear examen
     @UseGuards(JwtAuthGuard)
     @Post('/')

@@ -176,6 +176,34 @@ export class ExamenesService {
 
     }
 
+    // Limpiar examenes antiguos
+    async limpiarExamenes(): Promise<IExamen[]> {
+
+        const pipeline = [];
+
+        const fechaHoy = new Date();
+
+        pipeline.push({$match: { activo: true }});
+
+        // Se listan los examenes antiguos
+        pipeline.push({$match:{ createdAt: { $lte: new Date(format(fechaHoy, 'yyyy-MM-dd')) } }});
+        const examenes = await this.examenModel.aggregate(pipeline);
+
+        // Se dan de baja a los examenes listados        
+        if(examenes.length !== 0){
+            examenes.forEach( async examen => {
+                await this.examenModel.findByIdAndUpdate(examen._id, { 
+                    estado: 'Finalizado', 
+                    baja_tiempo: true, 
+                    baja_motivo: 'Finalizado por exceso de tiempo',
+                    activo: false });
+            })
+        }
+
+        return examenes;
+
+    }
+
     // Listar examenes historial
     async listarExamenesHistorial(querys: any, data: any): Promise<IExamen[]> {
 

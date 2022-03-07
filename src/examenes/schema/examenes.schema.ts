@@ -72,6 +72,16 @@ export const examenSchema = new Schema({
         default: false
     },
 
+    baja_tiempo: {
+        type: Boolean,
+        default: false
+    },
+
+    baja_motivo: {
+        type: String,
+        default: ''
+    },
+
     tiempo : {
         type: Number,
         default: 30 
