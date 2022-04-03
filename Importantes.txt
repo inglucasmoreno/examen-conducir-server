@@ -1,0 +1,5 @@
+- Ruta de las imagenes
+- Al subir cambiar la ruta ./public/img por ../public/img
+
+- Inicializacion de preguntas
+- Al subir, inicializar preguntas en modo desarrollador desde servidor
