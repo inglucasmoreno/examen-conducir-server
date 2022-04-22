@@ -17,6 +17,7 @@ import { join } from 'path';
 import { SocketModule } from './socket/socket.module';
 import { ConfigModule } from '@nestjs/config';
 import { EstadisticasModule } from './estadisticas/estadisticas.module';
+import { FormularioPracticaModule } from './formulario-practica/formulario-practica.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { EstadisticasModule } from './estadisticas/estadisticas.module';
       InicializacionModule,
       ImagenesModule,
       SocketModule,
-      EstadisticasModule, 
+      EstadisticasModule,
+      FormularioPracticaModule, 
       ],
   controllers: [AppController],
   providers: [AppService]
