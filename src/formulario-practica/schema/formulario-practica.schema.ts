@@ -22,8 +22,7 @@ export const formularioPracticaSchema = new Schema({
 
     tipo: {
         type: String,
-        uppercase: true,
-        default: 'AUTO'
+        default: 'Auto'
     },
 
     activo: {

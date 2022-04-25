@@ -2,7 +2,6 @@ import { IsNotEmpty } from "class-validator"
 
 export class FormularioPracticaDTO {
     
-    @IsNotEmpty()
     readonly nro_formulario: string;
     
     @IsNotEmpty()

@@ -33,8 +33,10 @@ export class FormularioPracticaService {
     }  
 
     // Crear formulario
-    async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO): Promise<IFormularioPractica> {        
-        const formulario = new this.formularioPracticaModel(formularioPracticaDTO);
+    async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO): Promise<IFormularioPractica> { 
+        const data = {...formularioPracticaDTO, nro_formulario: '002'};
+        console.log(data);       
+        const formulario = new this.formularioPracticaModel(data);
         return await formulario.save();
     }
 
