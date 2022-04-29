@@ -3,6 +3,11 @@ import { Schema } from 'mongoose';
 export const formularioPracticaSchema = new Schema({
 
     nro_formulario: {
+        type: Number,
+        required: true
+    },
+   
+    nro_formulario_string: {
         type: String,
         uppercase: true,
         required: true
@@ -16,7 +21,7 @@ export const formularioPracticaSchema = new Schema({
 
     persona: {
         type: Schema.Types.ObjectId,
-        uppercase: true,
+        ref: 'persona',
         required: true
     },
 

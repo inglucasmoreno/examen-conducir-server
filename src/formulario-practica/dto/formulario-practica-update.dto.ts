@@ -1,7 +1,9 @@
 
 export class FormularioPracticaUpdateDTO {
     
-    readonly nro_formulario: string;
+    readonly nro_formulario: number;
+
+    readonly nro_formulario_string: string;
     
     readonly nro_tramite: string;
     

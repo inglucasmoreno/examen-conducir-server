@@ -24,18 +24,55 @@ export class FormularioPracticaService {
         
         const {columna, direccion} = querys;
 
-        // Ordenar
-        let ordenar = [columna || 'createdAt', direccion || -1];
-        
-        const formularios = await this.formularioPracticaModel.find()
-                                                              .sort([ordenar]);
+        const pipeline = [];
+        pipeline.push({$match:{}})
+
+        // Join ()
+        pipeline.push(
+            { $lookup: { // Lookup - Personas
+                from: 'personas',
+                localField: 'persona',
+                foreignField: '_id',
+                as: 'persona'
+            }},
+        );
+        pipeline.push({ $unwind: '$persona' });
+
+        // Ordenando datos
+        const ordenar: any = {};
+        if(columna){
+            ordenar[String(columna)] = Number(direccion);
+            pipeline.push({$sort: ordenar});
+        }
+
+        const formularios = await this.formularioPracticaModel.aggregate(pipeline);
+
         return formularios;
+
     }  
 
     // Crear formulario
     async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO): Promise<IFormularioPractica> { 
-        const data = {...formularioPracticaDTO, nro_formulario: '002'};
-        console.log(data);       
+
+        // Se determina si hay formularios cargados en sistema
+        const formularios = await this.listarFormularios({columna: 'createdAt', direccion: -1});
+
+        let nro_formulario = 0;
+        let nro_formulario_string = '';
+
+        if(formularios.length === 0){
+            nro_formulario = 1;
+            nro_formulario_string = '000001';
+        }else{
+            nro_formulario = formularios[0].nro_formulario + 1;
+            if(nro_formulario < 10) nro_formulario_string = '00000' + nro_formulario.toString();
+            else if(nro_formulario < 100) nro_formulario_string = '0000' + nro_formulario.toString();
+            else if(nro_formulario < 1000) nro_formulario_string = '000' + nro_formulario.toString();
+            else if(nro_formulario < 10000) nro_formulario_string = '00' + nro_formulario.toString();
+            else if(nro_formulario < 100000) nro_formulario_string = '0' + nro_formulario.toString();
+        }
+        
+        const data = {...formularioPracticaDTO, nro_formulario, nro_formulario_string};
         const formulario = new this.formularioPracticaModel(data);
         return await formulario.save();
     }
