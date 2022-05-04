@@ -9,7 +9,6 @@ export const formularioPracticaSchema = new Schema({
    
     nro_formulario_string: {
         type: String,
-        uppercase: true,
         required: true
     },
 

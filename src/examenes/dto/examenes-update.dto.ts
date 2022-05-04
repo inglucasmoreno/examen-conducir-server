@@ -1,6 +1,10 @@
 
 export class ExamenUpdateDTO {
     
+    readonly nro_examen: number;
+
+    readonly nro_examen_string: string;
+
     readonly usuario: string;
 
     readonly tipo_licencia: string;

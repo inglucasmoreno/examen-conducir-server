@@ -2,6 +2,16 @@ import { Schema } from 'mongoose';
 
 export const examenSchema = new Schema({
 
+    nro_examen: {
+        type: Number,
+        require: 'El numero de examen es obligatorio'
+    },
+
+    nro_examen_string: {
+        type: String,
+        require: 'La cadena del numero de formulario es obligatorio'
+    },
+
     usuario: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',

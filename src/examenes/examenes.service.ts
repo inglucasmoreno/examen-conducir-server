@@ -211,7 +211,7 @@ export class ExamenesService {
         const {columna, direccion } = querys;
 
         // Body - Datos de busqueda
-        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona } = data;
+        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string } = data;
 
         const pipeline = [];
 
@@ -221,11 +221,13 @@ export class ExamenesService {
 
         // Filtro - Lugar de creacion
         if(lugar.trim() !== ''){
-            console.log(lugar);
             let idLugar: any = '';
             idLugar = new mongoose.Types.ObjectId(lugar);
             pipeline.push({$match: { lugar: idLugar }});
         }
+
+        // Filtro - Estado de examen
+        if(nro_examen_string && nro_examen_string !== '')pipeline.push({$match: { nro_examen_string }});
 
         // Filtro - Estado de examen
         if(estado && estado !== '')pipeline.push({$match: { estado }});
@@ -302,8 +304,8 @@ export class ExamenesService {
         pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
 
         // Se filtra por lugar si es necesario
-        if(lugar !== '') idLugar = new mongoose.Types.ObjectId(lugar);
-        if(lugar !== ''){ pipeline.push({$match: { lugar: idLugar }}); }
+        if(lugar !== '' && lugar !== undefined) idLugar = new mongoose.Types.ObjectId(lugar);
+        if(lugar !== '' && lugar !== undefined){ pipeline.push({$match: { lugar: idLugar }}); }
 
         // Join (lugar)
         pipeline.push(
@@ -392,8 +394,30 @@ export class ExamenesService {
         let data: any = examenDTO;
         data.preguntas = preguntasExamen;
 
+        // Numero de examen
+        const examenes = await this.listarExamenes({columna: 'createdAt', direccion: -1});
+        console.log(examenes);
+
+        let nro_examen = 0;
+        let nro_examen_string = '';
+
+        if(examenes.length === 0){
+            nro_examen = 1;
+            nro_examen_string = '000001';
+        }else{
+            nro_examen = examenes[0].nro_examen + 1;
+            if(nro_examen < 10) nro_examen_string = '00000' + nro_examen.toString();
+            else if(nro_examen < 100) nro_examen_string = '0000' + nro_examen.toString();
+            else if(nro_examen < 1000) nro_examen_string = '000' + nro_examen.toString();
+            else if(nro_examen < 10000) nro_examen_string = '00' + nro_examen.toString();
+            else if(nro_examen < 100000) nro_examen_string = '0' + nro_examen.toString();
+        }
+
+        data.nro_examen = nro_examen;
+        data.nro_examen_string = nro_examen_string;
+
         // Se Genera y almacena el examen en la Base de datos
-        const examen = new this.examenModel(examenDTO);
+        const examen = new this.examenModel(data);
         await examen.save();
 
         return 'Examen generado correctamente';

@@ -1,14 +1,13 @@
-import { IsNotEmpty } from "class-validator"
-
 export class ExamenDTO {
     
-    // @IsNotEmpty()
+    readonly nro_examen: number;
+
+    readonly nro_examen_string: string;
+
     readonly usuario: string;
 
-    // @IsNotEmpty()
     readonly tipo_licencia: string;
 
-    // @IsNotEmpty()
     readonly preguntas: [{
         _id: string,
         numero: number,
@@ -23,16 +22,12 @@ export class ExamenDTO {
         seleccion_correcta: boolean
     }];
 
-    // @IsNotEmpty()
     readonly estado: string;
 
-    // @IsNotEmpty()
     readonly fecha_rindiendo: Date;
 
-    // @IsNotEmpty()
     readonly fecha_finalizacion: Date;
 
-    // @IsNotEmpty()
     readonly persona: string;
 
     readonly nota: number;
