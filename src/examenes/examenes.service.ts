@@ -371,32 +371,90 @@ export class ExamenesService {
         if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
         else cantidadPreguntas = 60;
 
-        let cantidadTotal = preguntas.length;
+        // let cantidadTotal = preguntas.length;
 
-        // Se arma el arreglo definitivo
-        for(var i = 0; i < cantidadPreguntas; i++){
+        console.log(preguntas.length);
 
-            const nroAleatorio = Math.floor(Math.random() * cantidadTotal); // Numero aleatorio [0 - preguntas.length]
+        // Preguntas de frecuencia 5
+        let preguntas_frecuencia_5 = preguntas.filter(pregunta => (pregunta.frecuencia == 5));
+        console.log(preguntas_frecuencia_5.length);
 
-            // Se obtiene la pregunta aleatoria
-            const randomElement: any = preguntas[nroAleatorio];
+        // Preguntas de frecuencia 3 y 4
+        let preguntas_frecuencia_3_4 = preguntas.filter(pregunta => (pregunta.frecuencia === 3 || pregunta.frecuencia === 4));
+        console.log(preguntas_frecuencia_3_4.length);
 
-            preguntas.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
-            cantidadTotal -= 1;                   // Se decrementa en 1 la cantidad total de preguntas (Porque se elimina una del arreglo en la linea anterior)
-
-            randomElement.numero = i + 1;
-
+        // Preguntas de frecuencia 1 y 2
+        let preguntas_frecuencia_1_2 = preguntas.filter(pregunta => (pregunta.frecuencia === 1 || pregunta.frecuencia === 2));
+        console.log(preguntas_frecuencia_1_2.length);
+        
+        // Preguntas frecuencia 5
+        let cantidadTotal_5 = preguntas_frecuencia_5.length;
+        for(var i = 0; i < 30; i++){
+            
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_5); // Numero aleatorio [0 - preguntas.length]
+            const randomElement = preguntas_frecuencia_5[nroAleatorio];
+        
             // Se agrega al arreglo
-            preguntasExamen.push(randomElement);
-
+            preguntasExamen.push(randomElement);  
+            
+            preguntas_frecuencia_5.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_5 -= 1;          
+        
         }
+
+        // Preguntas frecuencia 3 o 4
+        let cantidadTotal_3_4 = preguntas_frecuencia_3_4.length;
+        for(var i = 0; i < 15; i++){
+            
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_3_4); // Numero aleatorio [0 - preguntas.length]
+            const randomElement = preguntas_frecuencia_3_4[nroAleatorio];
+            
+            // Se agrega al arreglo
+            preguntasExamen.push(randomElement);  
+              
+            preguntas_frecuencia_3_4.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_3_4 -= 1;          
+        
+        }
+
+        // Preguntas frecuencia 1 o 2
+        let cantidadTotal_1_2 = preguntas_frecuencia_1_2.length;
+        for(var i = 0; i < 5; i++){
+            
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_1_2); // Numero aleatorio [0 - preguntas.length]
+            const randomElement = preguntas_frecuencia_1_2[nroAleatorio];
+            
+            // Se agrega al arreglo
+            preguntasExamen.push(randomElement);  
+            
+            preguntas_frecuencia_1_2.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_1_2 -= 1;          
+        
+        }
+
+        // // Se arma el arreglo definitivo
+        // for(var i = 0; i < cantidadPreguntas; i++){
+
+        //     const nroAleatorio = Math.floor(Math.random() * cantidadTotal); // Numero aleatorio [0 - preguntas.length]
+
+        //     // Se obtiene la pregunta aleatoria
+        //     const randomElement: any = preguntas[nroAleatorio];
+
+        //     preguntas.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+        //     cantidadTotal -= 1;                   // Se decrementa en 1 la cantidad total de preguntas (Porque se elimina una del arreglo en la linea anterior)
+
+        //     randomElement.numero = i + 1;
+
+        //     // Se agrega al arreglo
+        //     preguntasExamen.push(randomElement);
+
+        // }
 
         let data: any = examenDTO;
         data.preguntas = preguntasExamen;
 
         // Numero de examen
         const examenes = await this.listarExamenes({columna: 'createdAt', direccion: -1});
-        console.log(examenes);
 
         let nro_examen = 0;
         let nro_examen_string = '';

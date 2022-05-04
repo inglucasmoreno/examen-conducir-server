@@ -94,8 +94,6 @@ export class ExamenesController {
     @Put('/:id')
     async actualizarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID ) {
      
-        console.log('Llega');
-
         const { estado, tiempo, activo } = examenUpdateDTO;
 
         // Examen a estado -> "Rindiendo" | Se agrega fecha de inicio y finalizacion del examen
