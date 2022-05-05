@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
 import * as mongoose  from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -357,6 +357,7 @@ export class ExamenesService {
     async crearExamen(examenDTO: ExamenDTO): Promise<string> {
 
         let preguntasExamen: any = [];
+        let nroPregunta = 0;
 
         const regex = new RegExp(examenDTO.tipo_licencia); // Expresion regular sin barras - La real seria /D/ por ejemplo
 
@@ -365,35 +366,107 @@ export class ExamenesService {
 
         // Cantidad de preguntas dependiendo del tipo de examen
         // Examen particular (A y B) = 50 preguntas | Examen profesional (C y D) = 60 preguntas
-
+        
         let cantidadPreguntas: number = 0;
 
-        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
+        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;         
         else cantidadPreguntas = 60;
-
-        // let cantidadTotal = preguntas.length;
-
-        console.log(preguntas.length);
-
-        // Preguntas de frecuencia 5
-        let preguntas_frecuencia_5 = preguntas.filter(pregunta => (pregunta.frecuencia == 5));
-        console.log(preguntas_frecuencia_5.length);
-
-        // Preguntas de frecuencia 3 y 4
-        let preguntas_frecuencia_3_4 = preguntas.filter(pregunta => (pregunta.frecuencia === 3 || pregunta.frecuencia === 4));
-        console.log(preguntas_frecuencia_3_4.length);
-
-        // Preguntas de frecuencia 1 y 2
-        let preguntas_frecuencia_1_2 = preguntas.filter(pregunta => (pregunta.frecuencia === 1 || pregunta.frecuencia === 2));
-        console.log(preguntas_frecuencia_1_2.length);
         
-        // Preguntas frecuencia 5
+        // Cantidad de preguntas por peso
+        let cantidad_6 = 0;
+        let cantidad_5 = Math.ceil(cantidadPreguntas * 0.35);                                           // Peso 5
+        let cantidad_4 = Math.ceil(cantidadPreguntas * 0.25);                                           // Peso 4
+        let cantidad_3 = Math.ceil(cantidadPreguntas * 0.20);                                           // Peso 3
+        let cantidad_2 = Math.ceil(cantidadPreguntas * 0.15);                                           // Peso 2
+        let cantidad_1 = cantidadPreguntas - (cantidad_5 + cantidad_4 + cantidad_3 + cantidad_2);       // Peso 1
+
+        // Se obtienen arreglos con preguntas dependiendo de su ponderacion
+
+        // Arreglo de preguntas de peso 6
+        let preguntas_frecuencia_6 = preguntas.filter(pregunta => (pregunta.frecuencia == 6));
+        let cantidadTotal_6 = preguntas_frecuencia_6.length;
+
+        // Arreglo de preguntas de peso 5
+        let preguntas_frecuencia_5 = preguntas.filter(pregunta => (pregunta.frecuencia == 5));
         let cantidadTotal_5 = preguntas_frecuencia_5.length;
-        for(var i = 0; i < 30; i++){
+
+        // Arreglo de preguntas de peso 4
+        let preguntas_frecuencia_4 = preguntas.filter(pregunta => (pregunta.frecuencia === 4));
+        let cantidadTotal_4 = preguntas_frecuencia_4.length;
+
+        // Arreglo de preguntas de peso 3
+        let preguntas_frecuencia_3 = preguntas.filter(pregunta => (pregunta.frecuencia === 3));
+        let cantidadTotal_3 = preguntas_frecuencia_3.length;
+
+        // Arreglo de preguntas de peso 1 y 2
+        let preguntas_frecuencia_2 = preguntas.filter(pregunta => (pregunta.frecuencia === 2));
+        let cantidadTotal_2 = preguntas_frecuencia_2.length;
+
+        // Arreglo de preguntas de peso 1 y 2
+        let preguntas_frecuencia_1 = preguntas.filter(pregunta => (pregunta.frecuencia === 1));
+        let cantidadTotal_1 = preguntas_frecuencia_1.length;
+        
+        // Adaptacion de cantidades
+    
+        if(cantidadTotal_6 > 0){
+            cantidad_6 = cantidadTotal_6;
+            cantidad_4 = cantidad_4 - cantidadTotal_6;
+        }
+
+        if(cantidadTotal_5 < cantidad_5){
+            const diff = cantidad_5 - cantidadTotal_5; 
+            cantidad_5 = cantidad_5 - diff;
+            cantidad_4 = cantidad_4 + diff; 
+        }
+
+        if(cantidadTotal_4 < cantidad_4){
+            const diff = cantidad_4 - cantidadTotal_4; 
+            cantidad_4 = cantidad_4 - diff;
+            cantidad_3 = cantidad_3 + diff; 
+        }
+
+        if(cantidadTotal_3 < cantidad_3){
+            const diff = cantidad_3 - cantidadTotal_3; 
+            cantidad_3 = cantidad_3 - diff;
+            cantidad_2 = cantidad_2 + diff; 
+        }
+
+        if(cantidadTotal_2 < cantidad_2){       
+            const diff = cantidad_2 - cantidadTotal_2; 
+            cantidad_2 = cantidad_2 - diff;
+            cantidad_1 = cantidad_1 + diff; 
+        }
+
+        // Preguntas de peso 6 - OBLIGATORIAS
+        if(cantidadTotal_6 > 0){
+            for(var i = 0; i < cantidad_6; i++){
+                
+                const nroAleatorio = Math.floor(Math.random() * cantidadTotal_6); // Numero aleatorio [0 - preguntas.length]
+                const randomElement: any = preguntas_frecuencia_6[nroAleatorio];
+                
+
+                nroPregunta += 1;
+                randomElement.numero = nroPregunta;
+                
+                // Se agrega al arreglo
+                preguntasExamen.push(randomElement);  
+                
+                preguntas_frecuencia_6.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+                cantidadTotal_6 -= 1;          
+            
+            }
+        }
+
+
+        // Preguntas de peso 5
+        for(var i = 0; i < cantidad_5; i++){
             
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_5); // Numero aleatorio [0 - preguntas.length]
-            const randomElement = preguntas_frecuencia_5[nroAleatorio];
-        
+            const randomElement: any = preguntas_frecuencia_5[nroAleatorio];
+            
+            nroPregunta += 1;
+            randomElement.numero = nroPregunta;
+            
             // Se agrega al arreglo
             preguntasExamen.push(randomElement);  
             
@@ -402,53 +475,77 @@ export class ExamenesService {
         
         }
 
-        // Preguntas frecuencia 3 o 4
-        let cantidadTotal_3_4 = preguntas_frecuencia_3_4.length;
-        for(var i = 0; i < 15; i++){
+        // Preguntas de peso 4
+        for(var i = 0; i < cantidad_4; i++){
             
-            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_3_4); // Numero aleatorio [0 - preguntas.length]
-            const randomElement = preguntas_frecuencia_3_4[nroAleatorio];
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_4); // Numero aleatorio [0 - preguntas.length]
+            const randomElement: any = preguntas_frecuencia_4[nroAleatorio];
             
+            // Numero de pregunta
+            nroPregunta += 1;
+            randomElement.numero = nroPregunta;
+
             // Se agrega al arreglo
             preguntasExamen.push(randomElement);  
               
-            preguntas_frecuencia_3_4.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
-            cantidadTotal_3_4 -= 1;          
-        
+            preguntas_frecuencia_4.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_4 -= 1;          
+
         }
 
-        // Preguntas frecuencia 1 o 2
-        let cantidadTotal_1_2 = preguntas_frecuencia_1_2.length;
-        for(var i = 0; i < 5; i++){
+        // Preguntas de peso 3
+        for(var i = 0; i < cantidad_3; i++){
+    
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_3); // Numero aleatorio [0 - preguntas.length]
+            const randomElement: any = preguntas_frecuencia_3[nroAleatorio];
             
-            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_1_2); // Numero aleatorio [0 - preguntas.length]
-            const randomElement = preguntas_frecuencia_1_2[nroAleatorio];
+            // Numero de pregunta
+            nroPregunta += 1;
+            randomElement.numero = nroPregunta;
+
+            // Se agrega al arreglo
+            preguntasExamen.push(randomElement);  
+                
+            preguntas_frecuencia_3.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_3 -= 1;          
+
+        }
+
+        // Preguntas de peso 2
+        for(var i = 0; i < cantidad_2; i++){
             
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_2); // Numero aleatorio [0 - preguntas.length]
+            const randomElement: any = preguntas_frecuencia_2[nroAleatorio];
+            
+            // Numero de pregunta
+            nroPregunta += 1;
+            randomElement.numero = nroPregunta;
+
             // Se agrega al arreglo
             preguntasExamen.push(randomElement);  
             
-            preguntas_frecuencia_1_2.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
-            cantidadTotal_1_2 -= 1;          
+            preguntas_frecuencia_2.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_2 -= 1;          
         
         }
 
-        // // Se arma el arreglo definitivo
-        // for(var i = 0; i < cantidadPreguntas; i++){
+        // Preguntas de peso 1
+        for(var i = 0; i < cantidad_1; i++){
+                
+            const nroAleatorio = Math.floor(Math.random() * cantidadTotal_1); // Numero aleatorio [0 - preguntas.length]
+            const randomElement: any = preguntas_frecuencia_1[nroAleatorio];
+            
+            // Numero de pregunta
+            nroPregunta += 1;
+            randomElement.numero = nroPregunta;
 
-        //     const nroAleatorio = Math.floor(Math.random() * cantidadTotal); // Numero aleatorio [0 - preguntas.length]
-
-        //     // Se obtiene la pregunta aleatoria
-        //     const randomElement: any = preguntas[nroAleatorio];
-
-        //     preguntas.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
-        //     cantidadTotal -= 1;                   // Se decrementa en 1 la cantidad total de preguntas (Porque se elimina una del arreglo en la linea anterior)
-
-        //     randomElement.numero = i + 1;
-
-        //     // Se agrega al arreglo
-        //     preguntasExamen.push(randomElement);
-
-        // }
+            // Se agrega al arreglo
+            preguntasExamen.push(randomElement);  
+            
+            preguntas_frecuencia_1.splice(nroAleatorio, 1);    // Se elimina la pregunta para que no pueda volver a tocar
+            cantidadTotal_1 -= 1;          
+        
+        }
 
         let data: any = examenDTO;
         data.preguntas = preguntasExamen;
@@ -527,7 +624,6 @@ export class ExamenesService {
         // Se verifica si no hay un examen activo para esta persona
         const examenExiste = await this.examenModel.findOne({ persona, activo: true });
 
-        // console.log(examenExiste);
         if(examenExiste) throw new NotFoundException('Ya existe un examen habilitado para esta persona');
 
         // Actualizacion de datos de examen

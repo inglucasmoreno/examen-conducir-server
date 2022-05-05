@@ -32,7 +32,7 @@ export class PreguntasService {
     // Crear pregunta
     async crearPregunta(preguntaDTO: PreguntaDTO): Promise<IPregunta> {
         
-        const preguntas = await this.preguntasModel.find().sort({'createdAt': -1});
+        const preguntas = await this.preguntasModel.find().sort({'numero': -1});
 
         if(preguntas.length !== 0){
             preguntaDTO.numero = preguntas[0].numero + 1;
