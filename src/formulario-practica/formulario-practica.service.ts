@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { FormularioPracticaUpdateDTO } from './dto/formulario-practica-update.dto';
 import { FormularioPracticaDTO } from './dto/formulario-practica.dto';
 import { IFormularioPractica } from './interface/formulario-practica.interface';
+import * as pdf from 'pdf-creator-node';
+import * as fs from 'fs';
 
 @Injectable()
 export class FormularioPracticaService {
@@ -72,9 +74,39 @@ export class FormularioPracticaService {
             else if(nro_formulario < 100000) nro_formulario_string = '0' + nro_formulario.toString();
         }
         
+        // Generacion de PDF
+
+        // Se trae el template
+        var html = fs.readFileSync('pdf/template/formulario.html', 'utf-8');
+
+        // Opciones de documento
+        var options = {
+            format: "A4",
+            orientation: "portrait",
+            border: "10mm",
+            footer: {
+                height: "28mm",
+                contents: {}
+            }
+        };
+
+        // Configuracion de documento
+        var document = {
+            html: html,
+            data: {
+                title: 'Documentacion de prueba'
+            },
+            path: `./docs/formulario.pdf`,
+            type: "",
+        };
+        
+        // Generacion del PDF
+        await pdf.create(document, options);
+
         const data = {...formularioPracticaDTO, nro_formulario, nro_formulario_string};
         const formulario = new this.formularioPracticaModel(data);
         return await formulario.save();
+
     }
 
     // Actualizar formulario
