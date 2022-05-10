@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+    
+<link rel="stylesheet" href="template.css">
+
 <style>
     
     /* CSS de PDF */
@@ -9,9 +12,22 @@
         font-family: Arial, Helvetica, sans-serif;
     }
 
-    marco {
-        border: 2px solid black;
-        
+    .fila_1 {
+        width: 100%;
+        border: 2px solid black;  
+        border-bottom: none;    
+    }
+
+    .fila_2 {
+        border-collapse: collapse;
+        width: 100%;
+        border: 2px solid black;  
+    }
+
+    .fila_3 {
+        border-collapse: collapse;
+        width: 100%;
+        border: 2px solid black;  
     }
 
 </style>
@@ -24,11 +40,258 @@
 <body style="font-family: Arial, Helvetica, sans-serif;">
 
     <div>
-        <div style="border:2px">
-            <h1 style="font:bold"> Logo de municipalidad </h1>
-        </div>
+        <table class="fila_1">
+            <tr>
+                <td> Logo </td>
+                <td style="text-align: right; padding: 20px;">
+                    <p style="font-weight:bold; margin: 0; padding: 0;"> Licencia Nacional de conducir </p>
+                    <p> EXAMEN PRÁCTICO </p>   
+                    <p style="font-weight:bold; margin: 0; padding: 0;"> N° 000000 </p>   
+                </td>
+            </tr>
+        </table>
+        <table class="fila_2">
+            <tr>
+                <td style="width: 75%"> 
+                    <p style="font-weight: bold; margin-left: 10px;"> DATOS PERSONALES DEL ASPIRANTE </p>
+                    <p> <span style="font-weight: bold; margin-left: 10px;"> Apellido y Nombre: </span> ........................................................................................................................ </p>
+                    <p> <span style="font-weight: bold; margin-left: 10px;"> DNI </span> ..................................................................................................................................................... </p>
+                </td>
+                <td style="text-align: center; padding: 20px; border-left: 2px solid black;">
+                    <p style="font-weight:bold; margin: 0; padding: 0;"> Fecha </p>
+                    <p style="margin: 0; padding: 0; margin-top: 35px;"> .................................... </p>
+                </td>
+            </tr>
+        </table>
+        <table style="width: 100%; border: 2px solid black; border-top:none">
+            <tr>
+                <td> 
+                    <p style="font-weight: bold; margin-left: 10px;"> DATOS DE VEHICULO </p>
+                    <p> <span style="font-weight: bold; margin-left: 10px;"> Marca y Modelo: </span> .................................................................................................................................................................................. </p>
+                    <p> <span style="font-weight: bold; margin-left: 10px;"> Dominio: </span> ................................................................................................................................................................................................ </p>
+                </td>
+            </tr>
+          </table>
+          <table style="width: 100%; border: 2px solid black; border-top:none; border-bottom: none; border-collapse: collapse; font-size: 20px;">
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        1 - Cédula verde del vehículo 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        2 - Comprobante del seguro  
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        3 - Estado de los neumáticos
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        4 - Conocimiento del motor
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        5 - Luces
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        6 - Freno de mano 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        7 - Seguridad pasiva
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        8 - Seguridad preventiva  
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        9 - Coord. acel. y emb. 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        10 - Retroceso en línea recta
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        11 - Maniobra de zigzag 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        12 - Estacionamiento paralelo 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        13 - Retroceso con giro 90º 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        14 - C. sentido de circulación 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        15 - Acel. y cambio de marcha
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        16 - Det. con parada gradual 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        17 - Respeta prioridad de paso 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        18 - Velocidad acorde 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        19 - Comp. en rotonda
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        20 - Señalización 
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 5px; padding-left: 10px;"> 
+                    <span>
+                        21 - Adelantamiento
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+                <td style="padding: 0px;"> 
+                    <span>
+                        22 - Respeta las señales  
+                    </span>
+                </td>
+                <td>
+                    <span style="border: 2px solid black; margin-left: 100px; color: white">RR</span>
+                </td>
+            </tr>
+        </table> 
+        <table style="border: 2px solid black; border-top: none; padding-left: 5px;">
+            <tr>
+                <td>
+                    <p style="margin-top: 30px;"> 
+                        <span style="font-weight: bold; font-size: 20px;">
+                            Observaciones     
+                        </span>
+                        <span>
+                            ......................................................................................................................................................................................................... 
+                        </span>
+                    </p>
+                    <p style="margin-top: 40px;">
+                        <span>
+                            ......................................................................................................................................................................................................... 
+                        </span>
+                    </p>
+                </td>                
+            </tr>
+        </table>   
     </div>
-
 </body>
 
 </html>

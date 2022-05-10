@@ -96,7 +96,7 @@ export class FormularioPracticaService {
             data: {
                 title: 'Documentacion de prueba'
             },
-            path: `./docs/formulario.pdf`,
+            path: `./public/formularios/formulario.pdf`,
             type: "",
         };
         
