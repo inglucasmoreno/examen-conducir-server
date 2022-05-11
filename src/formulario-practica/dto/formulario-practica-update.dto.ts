@@ -6,6 +6,8 @@ export class FormularioPracticaUpdateDTO {
     readonly nro_formulario_string: string;
     
     readonly nro_tramite: string;
+
+    readonly lugar: string;
     
     readonly persona: string;
     

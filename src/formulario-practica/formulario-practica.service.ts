@@ -59,10 +59,6 @@ export class FormularioPracticaService {
 
         const { nro_tramite, apellido, nombre, dni, tipo } = querys;
 
-        // Se verifica si el numero de tramite esta repetido
-        const repetido = await this.formularioPracticaModel.findOne({nro_tramite});
-        if(repetido) throw new NotFoundException('Ya existe un formulario con ese numero de tramite');
-
         // Se determina si hay formularios cargados en sistema
         const formularios = await this.listarFormularios({columna: 'createdAt', direccion: -1});
 

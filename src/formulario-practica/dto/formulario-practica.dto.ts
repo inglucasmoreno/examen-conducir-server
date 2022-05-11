@@ -7,6 +7,8 @@ export class FormularioPracticaDTO {
     readonly nro_formulario_string: string;
     
     readonly nro_tramite: string;
+
+    readonly lugar: string;
     
     @IsNotEmpty()
     readonly persona: string;

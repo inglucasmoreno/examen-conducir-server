@@ -18,6 +18,12 @@ export const formularioPracticaSchema = new Schema({
         required: true
     },
 
+    lugar: {
+        type: Schema.Types.ObjectId,
+        ref: 'lugar',
+        required: true
+    },
+
     persona: {
         type: Schema.Types.ObjectId,
         ref: 'persona',
