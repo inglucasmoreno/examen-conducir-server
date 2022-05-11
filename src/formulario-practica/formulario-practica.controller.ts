@@ -34,8 +34,8 @@ export class FormularioPracticaController {
     // Crear fomulario
     @UseGuards(JwtAuthGuard)
     @Post('/')
-    async crearFormulario(@Res() res, @Body() formularioPracticaDTO: FormularioPracticaDTO ) {
-        const formulario = await this.formularioPracticaService.crearFormulario(formularioPracticaDTO);    
+    async crearFormulario(@Res() res, @Body() formularioPracticaDTO: FormularioPracticaDTO, @Query() querys ) {
+        const formulario = await this.formularioPracticaService.crearFormulario(formularioPracticaDTO, querys);    
         res.status(HttpStatus.OK).json({
             message: 'Fomulario creado correctamente',
             formulario

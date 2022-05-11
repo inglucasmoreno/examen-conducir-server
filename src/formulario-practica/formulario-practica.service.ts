@@ -6,6 +6,7 @@ import { FormularioPracticaDTO } from './dto/formulario-practica.dto';
 import { IFormularioPractica } from './interface/formulario-practica.interface';
 import * as pdf from 'pdf-creator-node';
 import * as fs from 'fs';
+import { format } from 'date-fns';
 
 @Injectable()
 export class FormularioPracticaService {
@@ -54,7 +55,13 @@ export class FormularioPracticaService {
     }  
 
     // Crear formulario
-    async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO): Promise<IFormularioPractica> { 
+    async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO, querys: any): Promise<IFormularioPractica> { 
+
+        const { nro_tramite, apellido, nombre, dni, tipo } = querys;
+
+        // Se verifica si el numero de tramite esta repetido
+        const repetido = await this.formularioPracticaModel.findOne({nro_tramite});
+        if(repetido) throw new NotFoundException('Ya existe un formulario con ese numero de tramite');
 
         // Se determina si hay formularios cargados en sistema
         const formularios = await this.listarFormularios({columna: 'createdAt', direccion: -1});
@@ -77,7 +84,8 @@ export class FormularioPracticaService {
         // Generacion de PDF
 
         // Se trae el template
-        var html = fs.readFileSync('pdf/template/formulario.html', 'utf-8');
+        
+        var html = tipo === 'Auto' ? fs.readFileSync('pdf/template/formulario_auto.html', 'utf-8') : fs.readFileSync('pdf/template/formulario_moto.html', 'utf-8');
 
         // Opciones de documento
         var options = {
@@ -94,9 +102,15 @@ export class FormularioPracticaService {
         var document = {
             html: html,
             data: {
-                title: 'Documentacion de prueba'
+                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/formularios/logo.png',
+                nro_formulario: nro_formulario_string,
+                nro_tramite,
+                apellido,
+                nombre,
+                dni,
+                fecha: format(new Date(),'dd/MM/yyyy')
             },
-            path: `./public/formularios/formulario.pdf`,
+            path: tipo === 'Auto' ? `./public/formularios/formulario_auto.pdf` : `./public/formularios/formulario_moto.pdf`,
             type: "",
         };
         
