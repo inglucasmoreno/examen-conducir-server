@@ -31,6 +31,17 @@ export class FormularioPracticaController {
         });            
     }
 
+    // Listar formularios por lugar
+    @UseGuards(JwtAuthGuard)
+    @Get('/lugar/:id')
+    async listarFormulariosPorLugar(@Res() res, @Query() querys, @Param('id') lugarID) {
+        const formularios = await this.formularioPracticaService.listarFormulariosPorLugar(lugarID, querys);
+        res.status(HttpStatus.OK).json({
+            message: 'Los formularios se listaron correctamente',
+            formularios
+        });            
+    }
+
     // Crear fomulario
     @UseGuards(JwtAuthGuard)
     @Post('/')
@@ -40,6 +51,16 @@ export class FormularioPracticaController {
             message: 'Fomulario creado correctamente',
             formulario
         });      
+    }
+
+    // Imprimir formulario
+    @UseGuards(JwtAuthGuard)
+    @Post('/imprimir')
+    async imprimirFormulario(@Res() res, @Body() data: any) {
+        await this.formularioPracticaService.imprimirFormulario(data);
+        res.status(HttpStatus.OK).json({
+            message: 'Formulario generado correctamente',
+        });            
     }
 
     // Actualizar formulario

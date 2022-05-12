@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { FormularioPracticaUpdateDTO } from './dto/formulario-practica-update.dto';
 import { FormularioPracticaDTO } from './dto/formulario-practica.dto';
 import { IFormularioPractica } from './interface/formulario-practica.interface';
+import * as mongoose  from 'mongoose';
 import * as pdf from 'pdf-creator-node';
 import * as fs from 'fs';
 import { format } from 'date-fns';
@@ -53,6 +54,88 @@ export class FormularioPracticaService {
         return formularios;
 
     }  
+
+    // Listar formularios por lugar
+    async listarFormulariosPorLugar(id: string, querys: any): Promise<IFormularioPractica[]> {
+        
+        const {columna, direccion} = querys;
+
+        const pipeline = [];
+        
+        const idLugar = new mongoose.Types.ObjectId(id); 
+       
+        // Busqueda por ID
+        pipeline.push({$match:{ lugar: idLugar }});
+
+        // Join ()
+        pipeline.push(
+            { $lookup: { // Lookup - Personas
+                from: 'personas',
+                localField: 'persona',
+                foreignField: '_id',
+                as: 'persona'
+            }},
+        );
+        pipeline.push({ $unwind: '$persona' });
+
+        // Ordenando datos
+        const ordenar: any = {};
+        if(columna){
+            ordenar[String(columna)] = Number(direccion);
+            pipeline.push({$sort: ordenar});
+        }
+
+        const formularios = await this.formularioPracticaModel.aggregate(pipeline);
+
+        return formularios;
+
+    }  
+
+
+    // Imprimir formulario
+    async imprimirFormulario(data: any) {
+
+        const { nro_tramite, nro_formulario, fecha, apellido, nombre, dni, tipo } = data;
+
+        // Generacion de PDF
+
+        // Se trae el template
+        
+        var html = tipo === 'Auto' ? fs.readFileSync('pdf/template/formulario_auto.html', 'utf-8') : fs.readFileSync('pdf/template/formulario_moto.html', 'utf-8');
+
+        // Opciones de documento
+        var options = {
+            format: "A4",
+            orientation: "portrait",
+            border: "10mm",
+            footer: {
+                height: "28mm",
+                contents: {}
+            }
+        };
+
+        // Configuracion de documento
+        var document = {
+            html: html,
+            data: {
+                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/formularios/logo.png',
+                nro_formulario,
+                nro_tramite,
+                apellido,
+                nombre,
+                dni,
+                fecha: format(new Date(fecha),'dd/MM/yyyy')
+            },
+            path: tipo === 'Auto' ? `./public/formularios/formulario_auto.pdf` : `./public/formularios/formulario_moto.pdf`,
+            type: "",
+        };
+        
+        // Generacion del PDF
+        await pdf.create(document, options);
+
+        return 'Formulario generado';
+
+    }
 
     // Crear formulario
     async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO, querys: any): Promise<IFormularioPractica> { 
