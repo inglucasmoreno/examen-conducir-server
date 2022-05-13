@@ -42,6 +42,17 @@ export class FormularioPracticaController {
         });            
     }
 
+    // Limpiar formularios antiguos
+    @UseGuards(JwtAuthGuard)
+    @Get('/antiguos/limpiar/todos')
+    async limpiarFormularios(@Res() res) {
+        const formularios = await this.formularioPracticaService.limpiarFormularios();
+        res.status(HttpStatus.OK).json({
+            message: 'Los formularios se limpiaron correctamente',
+            formularios
+        });            
+    }   
+
     // Crear fomulario
     @UseGuards(JwtAuthGuard)
     @Post('/')

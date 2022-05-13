@@ -53,7 +53,7 @@ export class FormularioPracticaService {
 
         return formularios;
 
-    }  
+    }
 
     // Listar formularios por lugar
     async listarFormulariosPorLugar(id: string, querys: any): Promise<IFormularioPractica[]> {
@@ -89,7 +89,31 @@ export class FormularioPracticaService {
 
         return formularios;
 
-    }  
+    } 
+    
+    // Limpiar formularios activos
+    async limpiarFormularios(): Promise<IFormularioPractica[]> {
+
+        const pipeline = [];
+
+        const fechaHoy = new Date();
+
+        pipeline.push({$match: { activo: true }});
+
+        // Se listan los formularios antiguos
+        pipeline.push({$match:{ createdAt: { $lte: new Date(format(fechaHoy, 'yyyy-MM-dd')) } }});
+        const formularios = await this.formularioPracticaModel.aggregate(pipeline);
+
+        // Se dan de baja a los formularios listados        
+        if(formularios.length !== 0){
+            formularios.forEach( async formulario => {
+                await this.formularioPracticaModel.findByIdAndUpdate(formulario._id, { activo: false });
+            })
+        }
+
+        return formularios;
+
+    }
 
 
     // Imprimir formulario
