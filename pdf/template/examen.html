@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    
+    <link rel="stylesheet" href="template.css">
+
+    <style>
+        
+        /* CSS de PDF */
+        
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+    </style>
+
+    <head>
+        <mate charest="utf-8" />
+        <title> Examen </title>
+    </head>
+
+    <body style="font-family: Arial, Helvetica, sans-serif;">
+        <div>
+            <table style="border-bottom: 2px solid black;">
+                <tr>
+                    <td> <img style="width: 350px;" src={{url_logo}} alt="Municipalidad de San Luis"> </td>
+                    <td style="width: 50%; text-align: right; padding: 20px;">
+                        <div style="font-weight:bold; margin-top: 5px;"> Licencia Nacional de Conducir </div>
+                        <div style="margin-top: 2px; font-size: 14px;"> EXAMEN TEORICO </div>   
+                        <div style="font-weight:bold; margin-top: 5px;"> N° {{ examen.nro_examen_string }} </div>  
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td style="width: 50%; padding: 20px;">
+                        <div style="margin-top: 5px; font-size: 14px; font-size: 18px; font-weight: bold; padding: 5px; border: 1px solid black;"> DATOS DEL EXAMEN </div>
+                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Fecha del examen: </span> {{ fecha }}   </div>
+                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Creador del examen: </span> {{ examen.usuario.apellido }} {{ examen.usuario.nombre }} - DNI {{ examen.usuario.dni }}  </div>
+                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Rindio el examen: </span> {{ examen.persona.apellido }} {{ examen.persona.nombre }} - DNI {{ examen.persona.dni }}  </div>
+                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Tipo de licencia: </span> Clase {{ examen.tipo_licencia }}   </div>
+                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Clasificación: </span> {{ examen.cantidad_respuestas_correctas }} / {{ totalPreguntas }}   </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+
+</html>

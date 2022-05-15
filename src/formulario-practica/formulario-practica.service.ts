@@ -142,7 +142,7 @@ export class FormularioPracticaService {
         var document = {
             html: html,
             data: {
-                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/formularios/logo.png',
+                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png',
                 nro_formulario,
                 nro_tramite,
                 apellido,
@@ -150,7 +150,7 @@ export class FormularioPracticaService {
                 dni,
                 fecha: format(new Date(fecha),'dd/MM/yyyy')
             },
-            path: tipo === 'Auto' ? `./public/formularios/formulario_auto.pdf` : `./public/formularios/formulario_moto.pdf`,
+            path: tipo === 'Auto' ? `./public/pdf/formulario_auto.pdf` : `./public/pdf/formulario_moto.pdf`,
             type: "",
         };
         
@@ -205,7 +205,7 @@ export class FormularioPracticaService {
         var document = {
             html: html,
             data: {
-                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/formularios/logo.png',
+                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png',
                 nro_formulario: nro_formulario_string,
                 nro_tramite,
                 apellido,
@@ -213,7 +213,7 @@ export class FormularioPracticaService {
                 dni,
                 fecha: format(new Date(),'dd/MM/yyyy')
             },
-            path: tipo === 'Auto' ? `./public/formularios/formulario_auto.pdf` : `./public/formularios/formulario_moto.pdf`,
+            path: tipo === 'Auto' ? `./public/pdf/formulario_auto.pdf` : `./public/pdf/formulario_moto.pdf`,
             type: "",
         };
         

@@ -37,6 +37,16 @@ export class ExamenesController {
             examen
         });        
     }
+
+    // Imprimir examen
+    @UseGuards(JwtAuthGuard)
+    @Post('/imprimir')
+    async imprimirExamen(@Res() res, @Body() data: any) {
+        await this.examenesService.imprimirExamen(data);
+        res.status(HttpStatus.OK).json({
+            message: 'Examen generado correctamente',
+        });            
+    }
     
     // Listar examenes - Historial
     @UseGuards(JwtAuthGuard)
