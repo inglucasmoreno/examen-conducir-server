@@ -703,14 +703,22 @@ export class ExamenesService {
             }
         };
 
+        let preguntas: any[] = [];
+
+        examen.preguntas.map(pregunta => {
+            if(pregunta.url_img !== '') pregunta.url_img = 'http://localhost:3000/img/' + pregunta.url_img;
+            preguntas.push(pregunta);
+        })
+
         // Configuracion de documento
         var document = {
             html: html,
             data: {
                 url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png',
                 examen,
+                preguntas,
                 fecha: format(new Date(examen.createdAt),'dd/MM/yyyy'),
-                totalPreguntas: examen.cantidad_respuestas_correctas + examen.cantidad_respuestas_incorrectas
+                totalPreguntas: preguntas.length
             },
             path: `./public/pdf/examen.pdf`,
             type: "",

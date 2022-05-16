@@ -33,16 +33,36 @@
             </table>
             <table>
                 <tr>
-                    <td style="width: 50%; padding: 20px;">
-                        <div style="margin-top: 5px; font-size: 14px; font-size: 18px; font-weight: bold; padding: 5px; border: 1px solid black;"> DATOS DEL EXAMEN </div>
-                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Fecha del examen: </span> {{ fecha }}   </div>
-                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Creador del examen: </span> {{ examen.usuario.apellido }} {{ examen.usuario.nombre }} - DNI {{ examen.usuario.dni }}  </div>
-                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Rindio el examen: </span> {{ examen.persona.apellido }} {{ examen.persona.nombre }} - DNI {{ examen.persona.dni }}  </div>
-                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Tipo de licencia: </span> Clase {{ examen.tipo_licencia }}   </div>
-                        <div style="margin-top: 5px; font-size: 14px;"> <span style="font-weight: bold;"> Clasificación: </span> {{ examen.cantidad_respuestas_correctas }} / {{ totalPreguntas }}   </div>
+                    <td style="width: 50%; padding-top: 20px; padding-bottom: 20px;">
+                        <div style="margin-top: 8px; font-size: 14px;"> <span style="font-weight: bold;"> Fecha del examen: </span> {{ fecha }}   </div>
+                        <div style="margin-top: 8px; font-size: 14px;"> <span style="font-weight: bold;"> Creador del examen: </span> {{ examen.usuario.apellido }} {{ examen.usuario.nombre }} - DNI {{ examen.usuario.dni }}  </div>
+                        <div style="margin-top: 8px; font-size: 14px;"> <span style="font-weight: bold;"> Rindio el examen: </span> {{ examen.persona.apellido }} {{ examen.persona.nombre }} - DNI {{ examen.persona.dni }}  </div>
+                        <div style="margin-top: 8px; font-size: 14px;"> <span style="font-weight: bold;"> Tipo de licencia: </span> Clase {{ examen.tipo_licencia }}   </div>
+                        <div style="margin-top: 8px; font-size: 14px;"> <span style="font-weight: bold;"> Clasificación: </span> {{ examen.cantidad_respuestas_correctas }} / {{ totalPreguntas }}   </div>
                     </td>
                 </tr>
             </table>
+            <h1 style="font-size: 24px;"> Detalles del examen </h1>
+            {{#each preguntas}}
+            <div style="margin-top:10px"> <span style="font-weight: bold;"> Pregunta {{ numero }} </span>  - {{ descripcion }} </div>
+            {{#ifCond url_img '!==' ''}}
+            <img style="width: 100px; margin-top: 10px; margin-bottom: 10px;" src={{url_img}} alt="Señal de transito">
+            {{/ifCond}}
+            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta correcta </span>  - {{ respuesta_correcta }} </div>
+            {{#ifCond seleccionada '===' 'respuesta_correcta'}}
+            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - Respondida correctamente </div>
+            {{/ifCond}}
+            {{#ifCond seleccionada '===' 'respuesta_incorrecta_1'}}
+            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - {{ respuesta_incorrecta_1 }} </div>
+            {{/ifCond}}
+            {{#ifCond seleccionada '===' 'respuesta_incorrecta_2'}}
+            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - {{ respuesta_incorrecta_2 }} </div>
+            {{/ifCond}}
+            {{#ifCond seleccionada '===' ''}}
+            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - No respondida </div>
+            {{/ifCond}}
+            <hr>
+            {{/each}}
         </div>
     </body>
 
