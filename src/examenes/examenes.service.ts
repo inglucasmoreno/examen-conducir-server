@@ -23,8 +23,8 @@ export class ExamenesService {
 
     // Variables para desarrollo
     
-    public url_logo = 'https://equinocciotech/pdf/logo.png';
-    public url_imagenes = 'https://equinocciotech/img/';
+    public url_logo = 'https://equinocciotech.com/pdf/logo.png';
+    public url_imagenes = 'https://equinocciotech.com/img/';
     public url_template_examen = '../pdf/template/examen.html';
     public url_destino_pdf_examen = '../public/pdf/examen.pdf';
 
