@@ -14,19 +14,19 @@ export class FormularioPracticaService {
 
     // Variables para desarrollo
 
-    public url_logo = (process.env.URL_SERVER || 'http://localhost') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
-    public url_template_auto = 'src/pdf/template/formulario_auto.html';
-    public url_template_moto = 'src/pdf/template/formulario_moto.html';
-    public url_destino_pdf_auto = './public/pdf/formulario_auto.pdf';
-    public url_destino_pdf_moto = './public/pdf/formulario_moto.pdf';
+    // public url_logo = (process.env.URL_SERVER || 'http://localhost') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    // public url_template_auto = './pdf/template/formulario_auto.html';
+    // public url_template_moto = './pdf/template/formulario_moto.html';
+    // public url_destino_pdf_auto = './public/pdf/formulario_auto.pdf';
+    // public url_destino_pdf_moto = './public/pdf/formulario_moto.pdf';
 
     // Variables para produccion
 
-    // public url_logo = (process.env.URL_SERVER || 'https://equinocciotech') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
-    // public url_template_auto = './pdf/template/formulario_auto.html';
-    // public url_template_moto = './pdf/template/formulario_moto.html';
-    // public url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
-    // public url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
+    public url_logo = (process.env.URL_SERVER || 'https://equinocciotech') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    public url_template_auto = '../pdf/template/formulario_auto.html';
+    public url_template_moto = '../pdf/template/formulario_moto.html';
+    public url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
+    public url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
     
 
     constructor(

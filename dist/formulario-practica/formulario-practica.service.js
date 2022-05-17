@@ -24,8 +24,8 @@ let FormularioPracticaService = class FormularioPracticaService {
     constructor(formularioPracticaModel) {
         this.formularioPracticaModel = formularioPracticaModel;
         this.url_logo = (process.env.URL_SERVER || 'https://equinocciotech') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
-        this.url_template_auto = './pdf/template/formulario_auto.html';
-        this.url_template_moto = './pdf/template/formulario_moto.html';
+        this.url_template_auto = '../pdf/template/formulario_auto.html';
+        this.url_template_moto = '../pdf/template/formulario_moto.html';
         this.url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
         this.url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
     }

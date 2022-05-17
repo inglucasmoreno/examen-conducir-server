@@ -30,7 +30,7 @@ let ExamenesService = class ExamenesService {
         this.preguntaModel = preguntaModel;
         this.url_logo = (process.env.URL_SERVER || 'https://equinocciotech') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
         this.url_imagenes = 'https://equinocciotech:3000/img/';
-        this.url_template_examen = './pdf/template/examen.html';
+        this.url_template_examen = '../pdf/template/examen.html';
         this.url_destino_pdf_examen = '../public/pdf/examen.pdf';
     }
     async getExamen(id, activo) {
