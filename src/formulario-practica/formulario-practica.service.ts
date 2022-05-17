@@ -12,6 +12,23 @@ import { format } from 'date-fns';
 @Injectable()
 export class FormularioPracticaService {
 
+    // Variables para desarrollo
+
+    public url_logo = (process.env.URL_SERVER || 'http://localhost') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    public url_template_auto = 'src/pdf/template/formulario_auto.html';
+    public url_template_moto = 'src/pdf/template/formulario_moto.html';
+    public url_destino_pdf_auto = './public/pdf/formulario_auto.pdf';
+    public url_destino_pdf_moto = './public/pdf/formulario_moto.pdf';
+
+    // Variables para produccion
+
+    // public url_logo = (process.env.URL_SERVER || 'https://equinocciotech') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    // public url_template_auto = './pdf/template/formulario_auto.html';
+    // public url_template_moto = './pdf/template/formulario_moto.html';
+    // public url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
+    // public url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
+    
+
     constructor(
         @InjectModel('Formulario-practica') private readonly formularioPracticaModel: Model<IFormularioPractica>,
     ){}
@@ -125,7 +142,7 @@ export class FormularioPracticaService {
 
         // Se trae el template
         
-        var html = tipo === 'Auto' ? fs.readFileSync('pdf/template/formulario_auto.html', 'utf-8') : fs.readFileSync('pdf/template/formulario_moto.html', 'utf-8');
+        var html = tipo === 'Auto' ? fs.readFileSync(this.url_template_auto, 'utf-8') : fs.readFileSync(this.url_template_moto, 'utf-8');
 
         // Opciones de documento
         var options = {
@@ -142,7 +159,7 @@ export class FormularioPracticaService {
         var document = {
             html: html,
             data: {
-                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png',
+                url_logo: this.url_logo,
                 nro_formulario,
                 nro_tramite,
                 apellido,
@@ -150,7 +167,7 @@ export class FormularioPracticaService {
                 dni,
                 fecha: format(new Date(fecha),'dd/MM/yyyy')
             },
-            path: tipo === 'Auto' ? `./public/pdf/formulario_auto.pdf` : `./public/pdf/formulario_moto.pdf`,
+            path: tipo === 'Auto' ? this.url_destino_pdf_auto : this.url_destino_pdf_moto,
             type: "",
         };
         
@@ -188,7 +205,7 @@ export class FormularioPracticaService {
 
         // Se trae el template
         
-        var html = tipo === 'Auto' ? fs.readFileSync('pdf/template/formulario_auto.html', 'utf-8') : fs.readFileSync('pdf/template/formulario_moto.html', 'utf-8');
+        var html = tipo === 'Auto' ? fs.readFileSync(this.url_template_auto, 'utf-8') : fs.readFileSync(this.url_template_moto, 'utf-8');
 
         // Opciones de documento
         var options = {
@@ -205,7 +222,7 @@ export class FormularioPracticaService {
         var document = {
             html: html,
             data: {
-                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png',
+                url_logo: this.url_logo,
                 nro_formulario: nro_formulario_string,
                 nro_tramite,
                 apellido,
@@ -213,7 +230,7 @@ export class FormularioPracticaService {
                 dni,
                 fecha: format(new Date(),'dd/MM/yyyy')
             },
-            path: tipo === 'Auto' ? `./public/pdf/formulario_auto.pdf` : `./public/pdf/formulario_moto.pdf`,
+            path: tipo === 'Auto' ? this.url_destino_pdf_auto : this.url_destino_pdf_moto,
             type: "",
         };
         

@@ -14,6 +14,20 @@ import * as fs from 'fs';
 @Injectable()
 export class ExamenesService {
 
+    // Variables para desarrollo 
+
+    public url_logo = (process.env.URL_SERVER || 'http://localhost') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    public url_imagenes = 'http://localhost:3000/img/';
+    public url_template_examen = 'src/pdf/template/examen.html';
+    public url_destino_pdf_examen = './public/pdf/examen.pdf';
+
+    // Variables para desarrollo
+    
+    // public url_logo = (process.env.URL_SERVER || 'https://equinocciotech') + ':' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    // public url_imagenes = 'https://equinocciotech:3000/img/';
+    // public url_template_examen = './pdf/template/examen.html';
+    // public url_destino_pdf_examen = '../public/pdf/examen.pdf';
+
     constructor(@InjectModel('Examen') private readonly examenModel: Model<IExamen>,
                 @InjectModel('Est-preguntas') private readonly estPreguntasModel: Model<IEstPreguntas>,
                 @InjectModel('Reactivacion') private readonly reactivacionModel: Model<IRectivacion>,
@@ -690,7 +704,7 @@ export class ExamenesService {
 
         // Se trae el template
 
-        var html = fs.readFileSync('pdf/template/examen.html', 'utf-8');
+        var html = fs.readFileSync(this.url_template_examen, 'utf-8');
 
         // Opciones de documento
         var options = {
@@ -706,7 +720,7 @@ export class ExamenesService {
         let preguntas: any[] = [];
 
         examen.preguntas.map(pregunta => {
-            if(pregunta.url_img !== '') pregunta.url_img = 'http://localhost:3000/img/' + pregunta.url_img;
+            if(pregunta.url_img !== '') pregunta.url_img = this.url_imagenes + pregunta.url_img;
             preguntas.push(pregunta);
         })
 
@@ -714,13 +728,13 @@ export class ExamenesService {
         var document = {
             html: html,
             data: {
-                url_logo: 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png',
+                url_logo: this.url_logo,
                 examen,
                 preguntas,
                 fecha: format(new Date(examen.createdAt),'dd/MM/yyyy'),
                 totalPreguntas: preguntas.length
             },
-            path: `./public/pdf/examen.pdf`,
+            path: this.url_destino_pdf_examen,
             type: "",
         };
 
