@@ -33,7 +33,7 @@ AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, '..', 'public'),
+                rootPath: (0, path_1.join)(__dirname, '.', 'public'),
             }),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
