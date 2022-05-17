@@ -22,7 +22,7 @@ import { FormularioPracticaModule } from './formulario-practica/formulario-pract
 @Module({
   imports: [
       ServeStaticModule.forRoot({
-        rootPath: join(__dirname, '.', 'public'),
+        rootPath: join(__dirname, '..', 'public'),
       }),
       ConfigModule.forRoot({
         isGlobal: true,
