@@ -23,7 +23,7 @@ const date_fns_1 = require("date-fns");
 let FormularioPracticaService = class FormularioPracticaService {
     constructor(formularioPracticaModel) {
         this.formularioPracticaModel = formularioPracticaModel;
-        this.url_logo = 'http://localhost:3000/pdf/logo.png';
+        this.url_logo = 'http://localhost:3001/pdf/logo.png';
         this.url_template_auto = '../pdf/template/formulario_auto.html';
         this.url_template_moto = '../pdf/template/formulario_moto.html';
         this.url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';

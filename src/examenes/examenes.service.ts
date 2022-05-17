@@ -23,8 +23,8 @@ export class ExamenesService {
 
     // Variables para desarrollo
     
-    public url_logo = 'http://localhost:3000/pdf/logo.png';
-    public url_imagenes = 'http://localhost:3000/img/';
+    public url_logo = 'http://localhost:3001/pdf/logo.png';
+    public url_imagenes = 'http://localhost:3001/img/';
     public url_template_examen = '../pdf/template/examen.html';
     public url_destino_pdf_examen = '../public/pdf/examen.pdf';
 
