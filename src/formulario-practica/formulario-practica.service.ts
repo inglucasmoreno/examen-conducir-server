@@ -22,7 +22,7 @@ export class FormularioPracticaService {
 
     // Variables para produccion
 
-    public url_logo = 'https://equinocciotech.com/pdf/logo.png';
+    public url_logo = 'http://localhost:3000/pdf/logo.png';
     public url_template_auto = '../pdf/template/formulario_auto.html';
     public url_template_moto = '../pdf/template/formulario_moto.html';
     public url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
