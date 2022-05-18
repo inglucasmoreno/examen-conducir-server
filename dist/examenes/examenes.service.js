@@ -28,10 +28,10 @@ let ExamenesService = class ExamenesService {
         this.estPreguntasModel = estPreguntasModel;
         this.reactivacionModel = reactivacionModel;
         this.preguntaModel = preguntaModel;
-        this.url_logo = 'http://localhost:3001/pdf/logo.png';
-        this.url_imagenes = 'http://localhost:3001/img/';
-        this.url_template_examen = '../pdf/template/examen.html';
-        this.url_destino_pdf_examen = '../public/pdf/examen.pdf';
+        this.url_logo = 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png';
+        this.url_imagenes = 'http://localhost:' + +(process.env.PORT || 3000) + +'/img/';
+        this.url_template_examen = process.env.URL_TEMPLATE_EXAMEN || './pdf/template/examen.html';
+        this.url_destino_pdf_examen = process.env.URL_DESTINO_PDF_EXAMEN || './public/pdf/examen.pdf';
     }
     async getExamen(id, activo) {
         const idObject = new mongoose.Types.ObjectId(id);

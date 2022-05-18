@@ -23,11 +23,11 @@ const date_fns_1 = require("date-fns");
 let FormularioPracticaService = class FormularioPracticaService {
     constructor(formularioPracticaModel) {
         this.formularioPracticaModel = formularioPracticaModel;
-        this.url_logo = 'http://localhost:3001/pdf/logo.png';
-        this.url_template_auto = '../pdf/template/formulario_auto.html';
-        this.url_template_moto = '../pdf/template/formulario_moto.html';
-        this.url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
-        this.url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
+        this.url_logo = 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png';
+        this.url_template_auto = process.env.URL_TEMPLATE_FORMULARIO_AUTO || './pdf/template/formulario_auto.html';
+        this.url_template_moto = process.env.URL_TEMPLATE_FORMULARIO_MOTO || './pdf/template/formulario_moto.html';
+        this.url_destino_pdf_auto = process.env.URL_DESTINO_PDF_AUTO || './public/pdf/formulario_auto.pdf';
+        this.url_destino_pdf_moto = process.env.URL_DESTINO_PDF_MOTO || './public/pdf/formulario_moto.pdf';
     }
     async getFormulario(id) {
         const formularioPractica = await this.formularioPracticaModel.findById(id);

@@ -20,11 +20,9 @@ let SocketGateway = class SocketGateway {
         console.log('Usuario desconectado');
     }
     finalizarExamen(socket, data) {
-        console.log(data);
         this.server.emit('r-finalizar-examen', data);
     }
     listarExamenes(socket, data) {
-        console.log(data);
         this.server.emit('listar-examenes', data);
     }
 };

@@ -14,19 +14,19 @@ export class FormularioPracticaService {
 
     // Variables para desarrollo
 
-    // public url_logo = 'http://localhost:3000/pdf/logo.png';
-    // public url_template_auto = './pdf/template/formulario_auto.html';
-    // public url_template_moto = './pdf/template/formulario_moto.html';
-    // public url_destino_pdf_auto = './public/pdf/formulario_auto.pdf';
-    // public url_destino_pdf_moto = './public/pdf/formulario_moto.pdf';
+    public url_logo = 'http://localhost:' + (process.env.PORT  || 3000) + '/pdf/logo.png';
+    public url_template_auto = process.env.URL_TEMPLATE_FORMULARIO_AUTO || './pdf/template/formulario_auto.html';
+    public url_template_moto = process.env.URL_TEMPLATE_FORMULARIO_MOTO || './pdf/template/formulario_moto.html';
+    public url_destino_pdf_auto = process.env.URL_DESTINO_PDF_AUTO || './public/pdf/formulario_auto.pdf';
+    public url_destino_pdf_moto = process.env.URL_DESTINO_PDF_MOTO || './public/pdf/formulario_moto.pdf';
 
     // Variables para produccion
 
-    public url_logo = 'http://localhost:3001/pdf/logo.png';
-    public url_template_auto = '../pdf/template/formulario_auto.html';
-    public url_template_moto = '../pdf/template/formulario_moto.html';
-    public url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
-    public url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
+    // public url_logo = 'http://localhost:3000/pdf/logo.png';
+    // public url_template_auto = '../pdf/template/formulario_auto.html';
+    // public url_template_moto = '../pdf/template/formulario_moto.html';
+    // public url_destino_pdf_auto = '../public/pdf/formulario_auto.pdf';
+    // public url_destino_pdf_moto = '../public/pdf/formulario_moto.pdf';
     
 
     constructor(

@@ -1,4 +1,4 @@
-import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as mongoose  from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -16,17 +16,15 @@ export class ExamenesService {
 
     // Variables para desarrollo 
 
-    // public url_logo = 'http://localhost:3000/pdf/logo.png';
-    // public url_imagenes = 'http://localhost:3000/img/';
-    // public url_template_examen = './pdf/template/examen.html';
-    // public url_destino_pdf_examen = './public/pdf/examen.pdf';
+    public url_logo = 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png';
+    public url_imagenes = 'http://localhost:' + + (process.env.PORT || 3000) + + '/img/';
+    public url_template_examen = process.env.URL_TEMPLATE_EXAMEN || './pdf/template/examen.html';
+    public url_destino_pdf_examen = process.env.URL_DESTINO_PDF_EXAMEN || './public/pdf/examen.pdf';
 
     // Variables para desarrollo
     
-    public url_logo = 'http://localhost:3001/pdf/logo.png';
-    public url_imagenes = 'http://localhost:3001/img/';
-    public url_template_examen = '../pdf/template/examen.html';
-    public url_destino_pdf_examen = '../public/pdf/examen.pdf';
+    // public url_template_examen = '../pdf/template/examen.html';
+    // public url_destino_pdf_examen = '../public/pdf/examen.pdf';
 
     constructor(@InjectModel('Examen') private readonly examenModel: Model<IExamen>,
                 @InjectModel('Est-preguntas') private readonly estPreguntasModel: Model<IEstPreguntas>,
