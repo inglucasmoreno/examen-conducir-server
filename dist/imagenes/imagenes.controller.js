@@ -74,7 +74,7 @@ __decorate([
     (0, common_1.Post)('/'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
-            destination: process.env.URL_IMG || './public/img',
+            destination: '../public/img',
             filename: function (req, file, cb) {
                 const formato = file.mimetype.split('/')[1];
                 cb(null, (0, uuid_1.v4)() + '.' + formato);

@@ -38,7 +38,7 @@ export class ImagenesController {
          {
             storage: diskStorage({
                // destination: './public/img',
-               destination: process.env.URL_IMG || './public/img',
+               destination: '../public/img',
                filename: function(req, file, cb){
                   const formato = file.mimetype.split('/')[1];
                   cb(null, uuidv4() + '.' + formato);

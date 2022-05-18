@@ -17,7 +17,7 @@ export class ExamenesService {
     // Variables para desarrollo 
 
     public url_logo = 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png';
-    public url_imagenes = 'http://localhost:' + + (process.env.PORT || 3000) + + '/img/';
+    public url_imagenes = 'http://localhost:' + (process.env.PORT || 3000) + '/img/';
     public url_template_examen = process.env.URL_TEMPLATE_EXAMEN || './pdf/template/examen.html';
     public url_destino_pdf_examen = process.env.URL_DESTINO_PDF_EXAMEN || './public/pdf/examen.pdf';
 
