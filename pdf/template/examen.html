@@ -24,7 +24,7 @@
             <table style="border-bottom: 2px solid black;">
                 <tr>
                     <td> <img style="width: 350px;" src={{url_logo}} alt="Municipalidad de San Luis"> </td>
-                    <td style="width: 50%; text-align: right; padding: 20px;">
+                    <td style="width: 100%; text-align: right; padding: 20px;">
                         <div style="font-weight:bold; margin-top: 5px;"> Licencia Nacional de Conducir </div>
                         <div style="margin-top: 2px; font-size: 14px;"> EXAMEN TEORICO </div>   
                         <div style="font-weight:bold; margin-top: 5px;"> N° {{ examen.nro_examen_string }} </div>  
@@ -48,15 +48,18 @@
             {{#ifCond url_img '!==' ''}}
             <img style="width: 100px; margin-top: 10px; margin-bottom: 10px;" src={{url_img}} alt="Señal de transito">
             {{/ifCond}}
-            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta correcta </span>  - {{ respuesta_correcta }} </div>
+            <!-- <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta correcta </span>  - {{ respuesta_correcta }} </div> -->
             {{#ifCond seleccionada '===' 'respuesta_correcta'}}
-            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - Respondida correctamente </div>
+            <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - {{ respuesta_correcta }} </div>
+            <div style="margin-top:5px; font-size: 15px; font-weight: bold;">  Respondida correctamente </div>
             {{/ifCond}}
             {{#ifCond seleccionada '===' 'respuesta_incorrecta_1'}}
             <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - {{ respuesta_incorrecta_1 }} </div>
+            <div style="margin-top:5px; font-size: 15px; font-weight: bold;"> Respondida incorrectamente </div>
             {{/ifCond}}
             {{#ifCond seleccionada '===' 'respuesta_incorrecta_2'}}
             <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - {{ respuesta_incorrecta_2 }} </div>
+            <div style="margin-top:5px; font-size: 15px; font-weight: bold;"> Respondida incorrectamente </div>
             {{/ifCond}}
             {{#ifCond seleccionada '===' ''}}
             <div style="margin-top:5px; font-size: 15px;"> <span style="font-weight: bold;"> Respuesta seleccionada </span>  - No respondida </div>
