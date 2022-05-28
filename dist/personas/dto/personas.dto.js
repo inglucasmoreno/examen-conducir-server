@@ -25,5 +25,13 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], PersonaDTO.prototype, "dni", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PersonaDTO.prototype, "userCreator", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PersonaDTO.prototype, "userUpdator", void 0);
 exports.PersonaDTO = PersonaDTO;
 //# sourceMappingURL=personas.dto.js.map

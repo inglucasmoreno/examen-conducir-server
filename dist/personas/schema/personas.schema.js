@@ -21,6 +21,16 @@ exports.personaSchema = new mongoose_1.Schema({
         unique: true,
         trim: true
     },
+    userCreator: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'usuario',
+        required: true
+    },
+    userUpdator: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'usuario',
+        required: true
+    },
     activo: {
         type: Boolean,
         default: true

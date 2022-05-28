@@ -15,6 +15,10 @@ export class FormularioPracticaDTO {
     
     @IsNotEmpty()
     readonly tipo: string;
+
+    readonly userCreator: string;
+
+    readonly userUpdator: string;
     
     readonly activo: boolean;
 

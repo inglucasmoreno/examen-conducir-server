@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormularioPracticaModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const usuarios_schema_1 = require("../usuarios/schema/usuarios.schema");
 const formulario_practica_controller_1 = require("./formulario-practica.controller");
 const formulario_practica_service_1 = require("./formulario-practica.service");
 const formulario_practica_schema_1 = require("./schema/formulario-practica.schema");
@@ -16,7 +17,8 @@ let FormularioPracticaModule = class FormularioPracticaModule {
 };
 FormularioPracticaModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Formulario-practica', schema: formulario_practica_schema_1.formularioPracticaSchema }]),],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Formulario-practica', schema: formulario_practica_schema_1.formularioPracticaSchema }]),
+            mongoose_1.MongooseModule.forFeature([{ name: 'Usuario', schema: usuarios_schema_1.usuarioSchema }]),],
         controllers: [formulario_practica_controller_1.FormularioPracticaController],
         providers: [formulario_practica_service_1.FormularioPracticaService]
     })

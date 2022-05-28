@@ -20,9 +20,11 @@ const mongoose = require("mongoose");
 const pdf = require("pdf-creator-node");
 const fs = require("fs");
 const date_fns_1 = require("date-fns");
+const usuarios_interface_1 = require("../usuarios/interface/usuarios.interface");
 let FormularioPracticaService = class FormularioPracticaService {
-    constructor(formularioPracticaModel) {
+    constructor(formularioPracticaModel, usuarioModel) {
         this.formularioPracticaModel = formularioPracticaModel;
+        this.usuarioModel = usuarioModel;
         this.url_logo = 'http://localhost:' + (process.env.PORT || 3000) + '/pdf/logo.png';
         this.url_template_auto = process.env.URL_TEMPLATE_FORMULARIO_AUTO || './pdf/template/formulario_auto.html';
         this.url_template_moto = process.env.URL_TEMPLATE_FORMULARIO_MOTO || './pdf/template/formulario_moto.html';
@@ -30,10 +32,27 @@ let FormularioPracticaService = class FormularioPracticaService {
         this.url_destino_pdf_moto = process.env.URL_DESTINO_PDF_MOTO || './public/pdf/formulario_moto.pdf';
     }
     async getFormulario(id) {
-        const formularioPractica = await this.formularioPracticaModel.findById(id);
-        if (!formularioPractica)
+        const pipeline = [];
+        const idFormulario = new mongoose.Types.ObjectId(id);
+        pipeline.push({ $match: { _id: idFormulario } });
+        pipeline.push({ $lookup: {
+                from: 'usuarios',
+                localField: 'userCreator',
+                foreignField: '_id',
+                as: 'userCreator'
+            } });
+        pipeline.push({ $unwind: '$userCreator' });
+        pipeline.push({ $lookup: {
+                from: 'usuarios',
+                localField: 'userUpdator',
+                foreignField: '_id',
+                as: 'userUpdator'
+            } });
+        pipeline.push({ $unwind: '$userUpdator' });
+        const formularioPractica = await this.formularioPracticaModel.aggregate(pipeline);
+        if (!formularioPractica[0])
             throw new common_1.NotFoundException('El formulario no existe');
-        return formularioPractica;
+        return formularioPractica[0];
     }
     async listarFormularios(querys) {
         const { columna, direccion } = querys;
@@ -88,7 +107,8 @@ let FormularioPracticaService = class FormularioPracticaService {
         return formularios;
     }
     async imprimirFormulario(data) {
-        const { nro_tramite, nro_formulario, fecha, apellido, nombre, dni, tipo } = data;
+        const { nro_tramite, nro_formulario, fecha, apellido, nombre, dni, tipo, userCreator } = data;
+        const usuarioCreador = await this.usuarioModel.findById(userCreator);
         var html = tipo === 'Auto' ? fs.readFileSync(this.url_template_auto, 'utf-8') : fs.readFileSync(this.url_template_moto, 'utf-8');
         var options = {
             format: "A4",
@@ -108,7 +128,8 @@ let FormularioPracticaService = class FormularioPracticaService {
                 apellido,
                 nombre,
                 dni,
-                fecha: (0, date_fns_1.format)(new Date(fecha), 'dd/MM/yyyy')
+                fecha: (0, date_fns_1.format)(new Date(fecha), 'dd/MM/yyyy'),
+                creador: usuarioCreador.apellido + ' ' + usuarioCreador.nombre
             },
             path: tipo === 'Auto' ? this.url_destino_pdf_auto : this.url_destino_pdf_moto,
             type: "",
@@ -117,7 +138,7 @@ let FormularioPracticaService = class FormularioPracticaService {
         return 'Formulario generado';
     }
     async crearFormulario(formularioPracticaDTO, querys) {
-        const { nro_tramite, apellido, nombre, dni, tipo } = querys;
+        const { nro_tramite, apellido, nombre, dni, tipo, userCreator } = querys;
         const formularios = await this.listarFormularios({ columna: 'createdAt', direccion: -1 });
         let nro_formulario = 0;
         let nro_formulario_string = '';
@@ -138,6 +159,7 @@ let FormularioPracticaService = class FormularioPracticaService {
             else if (nro_formulario < 100000)
                 nro_formulario_string = '0' + nro_formulario.toString();
         }
+        const usuarioCreador = await this.usuarioModel.findById(userCreator);
         var html = tipo === 'Auto' ? fs.readFileSync(this.url_template_auto, 'utf-8') : fs.readFileSync(this.url_template_moto, 'utf-8');
         var options = {
             format: "A4",
@@ -157,7 +179,8 @@ let FormularioPracticaService = class FormularioPracticaService {
                 apellido,
                 nombre,
                 dni,
-                fecha: (0, date_fns_1.format)(new Date(), 'dd/MM/yyyy')
+                fecha: (0, date_fns_1.format)(new Date(), 'dd/MM/yyyy'),
+                creador: usuarioCreador.apellido + ' ' + usuarioCreador.nombre,
             },
             path: tipo === 'Auto' ? this.url_destino_pdf_auto : this.url_destino_pdf_moto,
             type: "",
@@ -175,7 +198,9 @@ let FormularioPracticaService = class FormularioPracticaService {
 FormularioPracticaService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('Formulario-practica')),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)('Usuario')),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], FormularioPracticaService);
 exports.FormularioPracticaService = FormularioPracticaService;
 //# sourceMappingURL=formulario-practica.service.js.map

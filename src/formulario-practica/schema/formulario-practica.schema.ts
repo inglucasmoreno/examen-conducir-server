@@ -35,6 +35,18 @@ export const formularioPracticaSchema = new Schema({
         default: 'Auto'
     },
 
+    userCreator: {
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        required: true
+    },
+
+    userUpdator: {
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        required: true
+    },
+
     activo: {
         type: Boolean,
         default: true

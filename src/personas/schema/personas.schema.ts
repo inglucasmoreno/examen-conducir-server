@@ -22,6 +22,18 @@ export const personaSchema = new Schema({
         unique: true,
         trim: true
     },
+
+    userCreator: {
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        required: true
+    },
+
+    userUpdator: {
+        type: Schema.Types.ObjectId,
+        ref: 'usuario',
+        required: true
+    },
     
     activo: {
         type: Boolean,

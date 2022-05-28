@@ -8,6 +8,7 @@ import * as mongoose  from 'mongoose';
 import * as pdf from 'pdf-creator-node';
 import * as fs from 'fs';
 import { format } from 'date-fns';
+import { IUsuario } from 'src/usuarios/interface/usuarios.interface';
 
 @Injectable()
 export class FormularioPracticaService {
@@ -31,13 +32,44 @@ export class FormularioPracticaService {
 
     constructor(
         @InjectModel('Formulario-practica') private readonly formularioPracticaModel: Model<IFormularioPractica>,
+        @InjectModel('Usuario') private readonly usuarioModel: Model<IUsuario>,
     ){}
 
     // Formulario por ID
     async getFormulario(id: string): Promise<IFormularioPractica> {
-        const formularioPractica = await this.formularioPracticaModel.findById(id);
-        if(!formularioPractica) throw new NotFoundException('El formulario no existe');
-        return formularioPractica;
+
+        const pipeline = [];
+
+        const idFormulario = new mongoose.Types.ObjectId(id);
+
+        pipeline.push({$match:{_id: idFormulario}});
+
+        // Join
+        pipeline.push(
+            { $lookup: { // Lookup - Usuario creador
+                from: 'usuarios',
+                localField: 'userCreator',
+                foreignField: '_id',
+                as: 'userCreator'
+            }},
+        );
+        pipeline.push({ $unwind: '$userCreator' });
+
+        // Join
+        pipeline.push(
+            { $lookup: { // Lookup - Usuario editor
+                from: 'usuarios',
+                localField: 'userUpdator',
+                foreignField: '_id',
+                as: 'userUpdator'
+            }},
+        );
+        pipeline.push({ $unwind: '$userUpdator' });
+
+        const formularioPractica = await this.formularioPracticaModel.aggregate(pipeline);
+        if(!formularioPractica[0]) throw new NotFoundException('El formulario no existe');
+        return formularioPractica[0];
+        
     }  
     
     // Listar formularios
@@ -136,7 +168,10 @@ export class FormularioPracticaService {
     // Imprimir formulario
     async imprimirFormulario(data: any) {
 
-        const { nro_tramite, nro_formulario, fecha, apellido, nombre, dni, tipo } = data;
+        const { nro_tramite, nro_formulario, fecha, apellido, nombre, dni, tipo, userCreator } = data;
+
+        // Se obtiene el userCreator
+        const usuarioCreador = await this.usuarioModel.findById(userCreator);
 
         // Generacion de PDF
 
@@ -165,7 +200,8 @@ export class FormularioPracticaService {
                 apellido,
                 nombre,
                 dni,
-                fecha: format(new Date(fecha),'dd/MM/yyyy')
+                fecha: format(new Date(fecha),'dd/MM/yyyy'),
+                creador: usuarioCreador.apellido + ' ' + usuarioCreador.nombre
             },
             path: tipo === 'Auto' ? this.url_destino_pdf_auto : this.url_destino_pdf_moto,
             type: "",
@@ -181,7 +217,7 @@ export class FormularioPracticaService {
     // Crear formulario
     async crearFormulario(formularioPracticaDTO: FormularioPracticaDTO, querys: any): Promise<IFormularioPractica> { 
 
-        const { nro_tramite, apellido, nombre, dni, tipo } = querys;
+        const { nro_tramite, apellido, nombre, dni, tipo, userCreator } = querys;
 
         // Se determina si hay formularios cargados en sistema
         const formularios = await this.listarFormularios({columna: 'createdAt', direccion: -1});
@@ -203,6 +239,9 @@ export class FormularioPracticaService {
         
         // Generacion de PDF
 
+        // Se obtiene el userCreator
+        const usuarioCreador = await this.usuarioModel.findById(userCreator);
+
         // Se trae el template
         
         var html = tipo === 'Auto' ? fs.readFileSync(this.url_template_auto, 'utf-8') : fs.readFileSync(this.url_template_moto, 'utf-8');
@@ -217,7 +256,7 @@ export class FormularioPracticaService {
                 contents: {}
             }
         };
-
+        
         // Configuracion de documento
         var document = {
             html: html,
@@ -228,7 +267,8 @@ export class FormularioPracticaService {
                 apellido,
                 nombre,
                 dni,
-                fecha: format(new Date(),'dd/MM/yyyy')
+                fecha: format(new Date(),'dd/MM/yyyy'),
+                creador: usuarioCreador.apellido + ' ' + usuarioCreador.nombre,
             },
             path: tipo === 'Auto' ? this.url_destino_pdf_auto : this.url_destino_pdf_moto,
             type: "",

@@ -10,6 +10,12 @@ export class PersonaDTO {
 
     @IsString()
     readonly dni: string;
+
+    @IsString()
+    readonly userCreator: string;
+
+    @IsString()
+    readonly userUpdator: string;
     
     readonly activo: boolean;
 }

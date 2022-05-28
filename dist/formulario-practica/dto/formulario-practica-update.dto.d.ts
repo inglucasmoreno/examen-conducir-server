@@ -5,5 +5,7 @@ export declare class FormularioPracticaUpdateDTO {
     readonly lugar: string;
     readonly persona: string;
     readonly tipo: string;
+    readonly userCreator: string;
+    readonly userUpdator: string;
     readonly activo: boolean;
 }

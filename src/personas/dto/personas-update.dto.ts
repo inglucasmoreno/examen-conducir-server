@@ -7,6 +7,10 @@ export class PersonaUpdateDTO {
     readonly nombre: string;
    
     readonly dni: string;
+
+    readonly userUpdator: string;
+
+    readonly userCreator: string;
     
     readonly activo: boolean;
 }

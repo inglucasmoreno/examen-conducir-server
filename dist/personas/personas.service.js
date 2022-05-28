@@ -16,15 +16,33 @@ exports.PersonasService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const mongoose = require("mongoose");
 let PersonasService = class PersonasService {
     constructor(personaModel) {
         this.personaModel = personaModel;
     }
     async getPersona(id) {
-        const persona = await this.personaModel.findById(id);
+        const pipeline = [];
+        const idPersona = new mongoose.Types.ObjectId(id);
+        pipeline.push({ $match: { _id: idPersona } });
+        pipeline.push({ $lookup: {
+                from: 'usuarios',
+                localField: 'userCreator',
+                foreignField: '_id',
+                as: 'userCreator'
+            } });
+        pipeline.push({ $unwind: '$userCreator' });
+        pipeline.push({ $lookup: {
+                from: 'usuarios',
+                localField: 'userUpdator',
+                foreignField: '_id',
+                as: 'userUpdator'
+            } });
+        pipeline.push({ $unwind: '$userUpdator' });
+        const persona = await this.personaModel.aggregate(pipeline);
         if (!persona)
             throw new common_1.NotFoundException('La persona no existe');
-        return persona;
+        return persona[0];
     }
     async getPersonaDNI(dni) {
         const persona = await this.personaModel.findOne({ dni });

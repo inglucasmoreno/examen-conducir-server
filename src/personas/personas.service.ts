@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as mongoose  from 'mongoose';
 import { IPersona } from './interface/personas.interface';
 import { PersonaDTO } from './dto/personas.dto';
 import { PersonaUpdateDTO } from './dto/personas-update.dto';
@@ -12,9 +13,40 @@ export class PersonasService {
     
     // Persona por ID
     async getPersona(id: string): Promise<IPersona> {
-        const persona = await this.personaModel.findById(id);
+        
+        const pipeline = [];
+
+        const idPersona = new mongoose.Types.ObjectId(id);
+
+        pipeline.push({$match:{ _id: idPersona }});
+
+        // Join
+        pipeline.push(
+            { $lookup: { // Lookup - Usuario creador
+                from: 'usuarios',
+                localField: 'userCreator',
+                foreignField: '_id',
+                as: 'userCreator'
+            }},
+        );
+        pipeline.push({ $unwind: '$userCreator' });
+
+        // Join
+        pipeline.push(
+            { $lookup: { // Lookup - Usuario editor
+                from: 'usuarios',
+                localField: 'userUpdator',
+                foreignField: '_id',
+                as: 'userUpdator'
+            }},
+        );
+        pipeline.push({ $unwind: '$userUpdator' });
+
+        const persona = await this.personaModel.aggregate(pipeline);
+
         if(!persona) throw new NotFoundException('La persona no existe');
-        return persona;
+        return persona[0];
+    
     }  
     
     // Persona por DNI
