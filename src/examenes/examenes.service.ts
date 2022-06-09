@@ -379,11 +379,11 @@ export class ExamenesService {
         let preguntas = await this.preguntaModel.find({alcance: regex, activo: true});
 
         // Cantidad de preguntas dependiendo del tipo de examen
-        // Examen particular (A y B) = 50 preguntas | Examen profesional (C y D) = 60 preguntas
+        // Examen particular (A y B) = 60 preguntas | Examen profesional (C y D) = 60 preguntas
 
         let cantidadPreguntas: number = 0;
 
-        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
+        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 60;
         else cantidadPreguntas = 60;
 
         // Cantidad de preguntas por peso
@@ -683,7 +683,7 @@ export class ExamenesService {
 
         });
 
-         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 40) examenUpdateDTO.aprobado = true; // (40/50 == 80%)
+         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 48) examenUpdateDTO.aprobado = true; // (48/60 == 80%)
          if((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E' || examenDB.tipo_licencia === 'F' || examenDB.tipo_licencia === 'G' || examenDB.tipo_licencia === 'H') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
 
          examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;

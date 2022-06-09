@@ -247,7 +247,7 @@ let ExamenesService = class ExamenesService {
         let preguntas = await this.preguntaModel.find({ alcance: regex, activo: true });
         let cantidadPreguntas = 0;
         if (examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B')
-            cantidadPreguntas = 50;
+            cantidadPreguntas = 60;
         else
             cantidadPreguntas = 60;
         let cantidad_6 = 0;
@@ -428,7 +428,7 @@ let ExamenesService = class ExamenesService {
             });
             estPregunta.save();
         });
-        if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 40)
+        if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 48)
             examenUpdateDTO.aprobado = true;
         if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E' || examenDB.tipo_licencia === 'F' || examenDB.tipo_licencia === 'G' || examenDB.tipo_licencia === 'H') && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
