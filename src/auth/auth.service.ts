@@ -44,5 +44,25 @@ export class AuthService {
         }
     }
 
+    // Conexion con portal de usuario - MUNI - En TESTING
+    async loginPortal(){
+        const body = {
+            Sistema: "SistemaPrueba",
+            SistemaPassword: "SistemaPrueba",
+            Usuario: "test",
+            UsuarioPassword:"test"
+          }
+      
+          const respuesta = await fetch("https://wspadesa.sanluislaciudad.gob.ar/WSPADesa/api/login/LoginSimplificado",{
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {'Content-Type': 'application/json'}
+          })
+      
+          const data = await respuesta.json();
+      
+          console.log(data);
+    }
+
 
 }
