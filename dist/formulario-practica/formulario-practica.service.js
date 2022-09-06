@@ -100,7 +100,7 @@ let FormularioPracticaService = class FormularioPracticaService {
         pipeline.push({ $match: { createdAt: { $lte: new Date((0, date_fns_1.format)(fechaHoy, 'yyyy-MM-dd')) } } });
         const formularios = await this.formularioPracticaModel.aggregate(pipeline);
         if (formularios.length !== 0) {
-            formularios.forEach(async (formulario) => {
+            formularios.map(async (formulario) => {
                 await this.formularioPracticaModel.findByIdAndUpdate(formulario._id, { activo: false });
             });
         }

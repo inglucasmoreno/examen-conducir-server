@@ -30,7 +30,7 @@ export class InicializacionService {
         
         const preguntas: any[] = dataExcel;
 
-        preguntas.forEach( async pregunta => {
+        preguntas.map( async pregunta => {
             const nuevaPregunta = new this.preguntasModel(pregunta);
             await nuevaPregunta.save();             
         });

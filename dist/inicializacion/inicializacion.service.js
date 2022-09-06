@@ -36,7 +36,7 @@ let InicializacionService = class InicializacionService {
         const sheet = workbookSheets[0];
         const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
         const preguntas = dataExcel;
-        preguntas.forEach(async (pregunta) => {
+        preguntas.map(async (pregunta) => {
             const nuevaPregunta = new this.preguntasModel(pregunta);
             await nuevaPregunta.save();
         });

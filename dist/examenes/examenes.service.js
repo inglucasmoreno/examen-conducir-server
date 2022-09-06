@@ -135,7 +135,7 @@ let ExamenesService = class ExamenesService {
         pipeline.push({ $match: { createdAt: { $lte: new Date((0, date_fns_1.format)(fechaHoy, 'yyyy-MM-dd')) } } });
         const examenes = await this.examenModel.aggregate(pipeline);
         if (examenes.length !== 0) {
-            examenes.forEach(async (examen) => {
+            examenes.map(async (examen) => {
                 await this.examenModel.findByIdAndUpdate(examen._id, {
                     estado: 'Finalizado',
                     baja_tiempo: true,
@@ -418,7 +418,7 @@ let ExamenesService = class ExamenesService {
         const examenDB = await this.getExamen(id, '');
         var cantidad_correctas = 0;
         var cantidad_incorrectas = 0;
-        examenUpdateDTO.preguntas.forEach(async (pregunta) => {
+        examenUpdateDTO.preguntas.map(async (pregunta) => {
             const correcta = pregunta.seleccionada === 'respuesta_correcta';
             correcta ? cantidad_correctas += 1 : cantidad_incorrectas += 1;
             const estPregunta = new this.estPreguntasModel({

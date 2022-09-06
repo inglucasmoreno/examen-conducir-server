@@ -155,7 +155,7 @@ export class FormularioPracticaService {
 
         // Se dan de baja a los formularios listados        
         if(formularios.length !== 0){
-            formularios.forEach( async formulario => {
+            formularios.map( async formulario => {
                 await this.formularioPracticaModel.findByIdAndUpdate(formulario._id, { activo: false });
             })
         }

@@ -205,7 +205,7 @@ export class ExamenesService {
 
         // Se dan de baja a los examenes listados
         if(examenes.length !== 0){
-            examenes.forEach( async examen => {
+            examenes.map( async examen => {
                 await this.examenModel.findByIdAndUpdate(examen._id, {
                     estado: 'Finalizado',
                     baja_tiempo: true,
@@ -666,7 +666,7 @@ export class ExamenesService {
          var cantidad_incorrectas = 0;
 
          // Se recorren las preguntas
-         examenUpdateDTO.preguntas.forEach( async pregunta => {
+         examenUpdateDTO.preguntas.map( async pregunta => {
 
             const correcta = pregunta.seleccionada === 'respuesta_correcta';
 
