@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Put, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,7 +38,7 @@ export class ImagenesController {
          {
             storage: diskStorage({
                // destination: './public/img',
-               destination: '../public/img',
+               destination: './public/img',
                filename: function(req, file, cb){
                   const formato = file.mimetype.split('/')[1];
                   cb(null, uuidv4() + '.' + formato);

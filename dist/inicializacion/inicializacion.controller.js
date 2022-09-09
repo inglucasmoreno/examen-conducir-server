@@ -14,6 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InicializacionController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
 const inicializacion_service_1 = require("./inicializacion.service");
 let InicializacionController = class InicializacionController {
     constructor(inicializacionService) {
@@ -31,6 +33,12 @@ let InicializacionController = class InicializacionController {
             message: 'Inicializacion de usuarios completado correctamente'
         });
     }
+    async importarPreguntas(file, query) {
+        const msg = await this.inicializacionService.importarPreguntas(query);
+        return {
+            msg
+        };
+    }
 };
 __decorate([
     (0, common_1.Get)('/preguntas'),
@@ -46,6 +54,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], InicializacionController.prototype, "initUsuarios", null);
+__decorate([
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './importar',
+            filename: function (req, file, cb) {
+                cb(null, 'preguntas.xlsx');
+            }
+        })
+    })),
+    (0, common_1.Post)('/preguntas'),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], InicializacionController.prototype, "importarPreguntas", null);
 InicializacionController = __decorate([
     (0, common_1.Controller)('inicializacion'),
     __metadata("design:paramtypes", [inicializacion_service_1.InicializacionService])

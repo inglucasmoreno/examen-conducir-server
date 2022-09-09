@@ -9,4 +9,5 @@ export declare class InicializacionService {
     constructor(preguntasModel: Model<IPregunta>, usuarioModel: Model<IUsuario>, lugarModel: Model<ILugar>);
     initPreguntas(): Promise<any>;
     initUsuarios(): Promise<any>;
+    importarPreguntas(query: any): Promise<any>;
 }
