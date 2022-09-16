@@ -350,7 +350,7 @@ let ExamenesService = class ExamenesService {
         }
         let data = examenDTO;
         data.preguntas = preguntasExamen;
-        const examenes = await this.listarExamenes({ columna: 'createdAt', direccion: -1 });
+        const examenes = await this.examenModel.find().sort({ createdAt: -1 });
         let nro_examen = 0;
         let nro_examen_string = '';
         if (examenes.length === 0) {
@@ -428,7 +428,7 @@ let ExamenesService = class ExamenesService {
             });
             estPregunta.save();
         });
-        if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 48)
+        if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
         if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E' || examenDB.tipo_licencia === 'F' || examenDB.tipo_licencia === 'G' || examenDB.tipo_licencia === 'H') && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;

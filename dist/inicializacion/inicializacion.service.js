@@ -68,6 +68,9 @@ let InicializacionService = class InicializacionService {
     }
     async importarPreguntas(query) {
         const { usuario } = query;
+        const preguntas = await this.preguntasModel.find();
+        if (preguntas.length !== 0)
+            throw new common_1.NotFoundException('Las preguntas ya se encuentran inicializadas');
         const workbook = XLSX.readFile('./importar/preguntas.xlsx');
         const workbookSheets = workbook.SheetNames;
         const sheet = workbookSheets[0];

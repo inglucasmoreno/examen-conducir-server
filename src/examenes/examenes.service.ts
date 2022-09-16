@@ -565,7 +565,8 @@ export class ExamenesService {
         data.preguntas = preguntasExamen;
 
         // Numero de examen
-        const examenes = await this.listarExamenes({columna: 'createdAt', direccion: -1});
+        // const examenes = await this.listarExamenes({columna: 'createdAt', direccion: -1});
+        const examenes = await this.examenModel.find().sort({ createdAt: -1 });
 
         let nro_examen = 0;
         let nro_examen_string = '';
@@ -683,7 +684,7 @@ export class ExamenesService {
 
         });
 
-         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 48) examenUpdateDTO.aprobado = true; // (48/60 == 80%)
+         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
          if((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E' || examenDB.tipo_licencia === 'F' || examenDB.tipo_licencia === 'G' || examenDB.tipo_licencia === 'H') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
 
          examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
