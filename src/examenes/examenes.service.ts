@@ -383,7 +383,7 @@ export class ExamenesService {
 
         let cantidadPreguntas: number = 0;
 
-        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 60;
+        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
         else cantidadPreguntas = 60;
 
         // Cantidad de preguntas por peso
@@ -684,7 +684,7 @@ export class ExamenesService {
 
         });
 
-         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
+         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45) examenUpdateDTO.aprobado = true; // (45/50 == 90%)
          if((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E' || examenDB.tipo_licencia === 'F' || examenDB.tipo_licencia === 'G' || examenDB.tipo_licencia === 'H') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
 
          examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
