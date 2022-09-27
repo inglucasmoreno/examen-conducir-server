@@ -248,8 +248,12 @@ let ExamenesService = class ExamenesService {
         let cantidadPreguntas = 0;
         if (examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B')
             cantidadPreguntas = 50;
-        else
+        else if (examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E')
             cantidadPreguntas = 60;
+        else if (examenDTO.tipo_licencia === 'G')
+            cantidadPreguntas = 13;
+        else if (examenDTO.tipo_licencia === 'H')
+            cantidadPreguntas = 18;
         let cantidad_6 = 0;
         let cantidad_5 = Math.ceil(cantidadPreguntas * 0.35);
         let cantidad_4 = Math.ceil(cantidadPreguntas * 0.25);
@@ -430,7 +434,11 @@ let ExamenesService = class ExamenesService {
         });
         if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45)
             examenUpdateDTO.aprobado = true;
-        if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E' || examenDB.tipo_licencia === 'F' || examenDB.tipo_licencia === 'G' || examenDB.tipo_licencia === 'H') && cantidad_correctas >= 54)
+        if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54)
+            examenUpdateDTO.aprobado = true;
+        if (examenDB.tipo_licencoa === 'G' && cantidad_correctas >= 13)
+            examenUpdateDTO.aprobado = true;
+        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 17)
             examenUpdateDTO.aprobado = true;
         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
