@@ -253,7 +253,7 @@ let ExamenesService = class ExamenesService {
         else if (examenDTO.tipo_licencia === 'G')
             cantidadPreguntas = 13;
         else if (examenDTO.tipo_licencia === 'H')
-            cantidadPreguntas = 18;
+            cantidadPreguntas = 17;
         let cantidad_6 = 0;
         let cantidad_5 = Math.ceil(cantidadPreguntas * 0.35);
         let cantidad_4 = Math.ceil(cantidadPreguntas * 0.25);
@@ -438,7 +438,7 @@ let ExamenesService = class ExamenesService {
             examenUpdateDTO.aprobado = true;
         if (examenDB.tipo_licencoa === 'G' && cantidad_correctas >= 13)
             examenUpdateDTO.aprobado = true;
-        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 17)
+        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16)
             examenUpdateDTO.aprobado = true;
         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;

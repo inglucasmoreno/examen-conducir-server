@@ -379,14 +379,17 @@ export class ExamenesService {
         let preguntas = await this.preguntaModel.find({alcance: regex, activo: true});
 
         // Cantidad de preguntas dependiendo del tipo de examen
-        // Examen particular (A y B) = 60 preguntas | Examen profesional (C y D) = 60 preguntas
+        // Examen particular (A y B) = 50 preguntas
+        // Examen profesional (C, D y E) = 60 preguntas
+        // Examen profesional (G) = 14 preguntas
+        // Examen profesional (H) = 17 preguntas
 
         let cantidadPreguntas: number = 0;
 
         if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
         else if(examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E') cantidadPreguntas = 60;
         else if(examenDTO.tipo_licencia === 'G') cantidadPreguntas = 13;
-        else if(examenDTO.tipo_licencia === 'H') cantidadPreguntas = 18; // H - D4
+        else if(examenDTO.tipo_licencia === 'H') cantidadPreguntas = 17; // H - D4
 
         // Cantidad de preguntas por peso
         let cantidad_6 = 0;
@@ -473,7 +476,6 @@ export class ExamenesService {
             }
         }
 
-
         // Preguntas de peso 5
         for(var i = 0; i < cantidad_5; i++){
 
@@ -545,7 +547,7 @@ export class ExamenesService {
 
         }
 
-        // Preguntas de peso 1
+        // // Preguntas de peso 1
         for(var i = 0; i < cantidad_1; i++){
 
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_1); // Numero aleatorio [0 - preguntas.length]
@@ -689,7 +691,7 @@ export class ExamenesService {
          if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45) examenUpdateDTO.aprobado = true; // (45/50 == 90%)
          if((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
          if(examenDB.tipo_licencoa === 'G' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
-         if(examenDB.tipo_licencia === 'H' && cantidad_correctas >= 17) examenUpdateDTO.aprobado = true;
+         if(examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16) examenUpdateDTO.aprobado = true; // (16/17 == 90%)
 
          examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
          examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
