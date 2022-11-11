@@ -20,10 +20,11 @@ let EstadisticasController = class EstadisticasController {
         this.estadisticasService = estadisticasService;
     }
     async getImagene(res, querys) {
-        const estadisticas = await this.estadisticasService.preguntas(querys);
+        const { estadisticas, totalItems } = await this.estadisticasService.preguntas(querys);
         res.status(common_1.HttpStatus.OK).json({
             message: 'Estadisticas de preguntas obtenidas correctamente',
-            estadisticas
+            estadisticas,
+            totalItems
         });
     }
 };

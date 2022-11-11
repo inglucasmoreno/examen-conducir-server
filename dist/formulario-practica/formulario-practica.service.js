@@ -35,19 +35,23 @@ let FormularioPracticaService = class FormularioPracticaService {
         const pipeline = [];
         const idFormulario = new mongoose.Types.ObjectId(id);
         pipeline.push({ $match: { _id: idFormulario } });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'userCreator',
                 foreignField: '_id',
                 as: 'userCreator'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$userCreator' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'userUpdator',
                 foreignField: '_id',
                 as: 'userUpdator'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$userUpdator' });
         const formularioPractica = await this.formularioPracticaModel.aggregate(pipeline);
         if (!formularioPractica[0])
@@ -55,43 +59,105 @@ let FormularioPracticaService = class FormularioPracticaService {
         return formularioPractica[0];
     }
     async listarFormularios(querys) {
-        const { columna, direccion } = querys;
-        const pipeline = [];
+        const { columna, direccion, desde, registerpp, activo, parametro, } = querys;
+        let pipeline = [];
+        let pipelineTotal = [];
         pipeline.push({ $match: {} });
-        pipeline.push({ $lookup: {
+        pipelineTotal.push({ $match: {} });
+        let filtroActivo = {};
+        if (activo && activo !== '') {
+            filtroActivo = { activo: activo === 'true' ? true : false };
+            pipeline.push({ $match: filtroActivo });
+            pipelineTotal.push({ $match: filtroActivo });
+        }
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
+        if (parametro && parametro !== '') {
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0)
+                    parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else
+                    parametroFinal = porPartes[i] + '.*';
+            }
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
+            pipelineTotal.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
+        }
         const ordenar = {};
         if (columna) {
             ordenar[String(columna)] = Number(direccion);
             pipeline.push({ $sort: ordenar });
         }
-        const formularios = await this.formularioPracticaModel.aggregate(pipeline);
-        return formularios;
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+        const [formularios, formulariosTotal] = await Promise.all([
+            this.formularioPracticaModel.aggregate(pipeline),
+            this.formularioPracticaModel.aggregate(pipelineTotal),
+        ]);
+        return {
+            formularios,
+            totalItems: formulariosTotal.length
+        };
     }
     async listarFormulariosPorLugar(id, querys) {
-        const { columna, direccion } = querys;
-        const pipeline = [];
+        const { columna, direccion, desde, registerpp, activo, parametro, } = querys;
+        let pipeline = [];
+        let pipelineTotal = [];
+        pipeline.push({ $match: {} });
+        pipelineTotal.push({ $match: {} });
         const idLugar = new mongoose.Types.ObjectId(id);
         pipeline.push({ $match: { lugar: idLugar } });
-        pipeline.push({ $lookup: {
+        pipelineTotal.push({ $match: { lugar: idLugar } });
+        let filtroActivo = {};
+        if (activo && activo !== '') {
+            filtroActivo = { activo: activo === 'true' ? true : false };
+            pipeline.push({ $match: filtroActivo });
+            pipelineTotal.push({ $match: filtroActivo });
+        }
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
+        if (parametro && parametro !== '') {
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0)
+                    parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else
+                    parametroFinal = porPartes[i] + '.*';
+            }
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
+            pipelineTotal.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
+        }
         const ordenar = {};
         if (columna) {
             ordenar[String(columna)] = Number(direccion);
             pipeline.push({ $sort: ordenar });
         }
-        const formularios = await this.formularioPracticaModel.aggregate(pipeline);
-        return formularios;
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+        const [formularios, formulariosTotal] = await Promise.all([
+            this.formularioPracticaModel.aggregate(pipeline),
+            this.formularioPracticaModel.aggregate(pipelineTotal),
+        ]);
+        return {
+            formularios,
+            totalItems: formulariosTotal.length
+        };
     }
     async limpiarFormularios() {
         const pipeline = [];
@@ -139,7 +205,9 @@ let FormularioPracticaService = class FormularioPracticaService {
     }
     async crearFormulario(formularioPracticaDTO, querys) {
         const { nro_tramite, apellido, nombre, dni, tipo, userCreator } = querys;
-        const formularios = await this.listarFormularios({ columna: 'createdAt', direccion: -1 });
+        const formularios = await this.formularioPracticaModel.find()
+            .sort({ createdAt: -1 })
+            .limit(1);
         let nro_formulario = 0;
         let nro_formulario_string = '';
         if (formularios.length === 0) {

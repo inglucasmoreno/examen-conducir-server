@@ -12,5 +12,4 @@ export declare class AuthService {
     login(user: any): Promise<{
         token: string;
     }>;
-    loginPortal(): Promise<void>;
 }

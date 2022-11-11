@@ -30,10 +30,11 @@ let PreguntasController = class PreguntasController {
         });
     }
     async listarPreguntas(res, querys) {
-        const preguntas = await this.preguntasService.listarPreguntas(querys);
+        const { preguntas, totalItems } = await this.preguntasService.listarPreguntas(querys);
         res.status(common_1.HttpStatus.OK).json({
             message: 'Listado de preguntas correcto',
-            preguntas
+            preguntas,
+            totalItems
         });
     }
     async crearPregunta(res, preguntaDTO) {

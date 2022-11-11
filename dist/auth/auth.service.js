@@ -61,21 +61,6 @@ let AuthService = class AuthService {
             token: this.jwtService.sign(payload)
         };
     }
-    async loginPortal() {
-        const body = {
-            Sistema: "SistemaPrueba",
-            SistemaPassword: "SistemaPrueba",
-            Usuario: "test",
-            UsuarioPassword: "test"
-        };
-        const respuesta = await fetch("https://wspadesa.sanluislaciudad.gob.ar/WSPADesa/api/login/LoginSimplificado", {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await respuesta.json();
-        console.log(data);
-    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),

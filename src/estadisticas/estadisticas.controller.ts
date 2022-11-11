@@ -9,10 +9,11 @@ export class EstadisticasController {
     // Estadisticas de preguntas
     @Get('/preguntas')
     async getImagene(@Res() res, @Query() querys) {
-        const estadisticas = await this.estadisticasService.preguntas(querys);
+        const { estadisticas, totalItems } = await this.estadisticasService.preguntas(querys);
         res.status(HttpStatus.OK).json({
             message: 'Estadisticas de preguntas obtenidas correctamente',
-            estadisticas
+            estadisticas,
+            totalItems
         });  
     } 
 }

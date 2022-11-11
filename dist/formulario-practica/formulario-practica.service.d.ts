@@ -13,8 +13,8 @@ export declare class FormularioPracticaService {
     url_destino_pdf_moto: string;
     constructor(formularioPracticaModel: Model<IFormularioPractica>, usuarioModel: Model<IUsuario>);
     getFormulario(id: string): Promise<IFormularioPractica>;
-    listarFormularios(querys: any): Promise<IFormularioPractica[]>;
-    listarFormulariosPorLugar(id: string, querys: any): Promise<IFormularioPractica[]>;
+    listarFormularios(querys: any): Promise<any>;
+    listarFormulariosPorLugar(id: string, querys: any): Promise<any>;
     limpiarFormularios(): Promise<IFormularioPractica[]>;
     imprimirFormulario(data: any): Promise<string>;
     crearFormulario(formularioPracticaDTO: FormularioPracticaDTO, querys: any): Promise<IFormularioPractica>;

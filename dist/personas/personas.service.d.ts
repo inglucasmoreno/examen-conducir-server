@@ -7,7 +7,7 @@ export declare class PersonasService {
     constructor(personaModel: Model<IPersona>);
     getPersona(id: string): Promise<IPersona>;
     getPersonaDNI(dni: string): Promise<IPersona>;
-    listarPersonas(querys: any): Promise<IPersona[]>;
+    listarPersonas(querys: any): Promise<any>;
     crearPersona(personaDTO: PersonaDTO): Promise<IPersona>;
     actualizarPersona(id: string, personaUpdateDTO: PersonaUpdateDTO): Promise<IPersona>;
 }

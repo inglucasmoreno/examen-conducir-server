@@ -30,17 +30,19 @@ let FormularioPracticaController = class FormularioPracticaController {
         });
     }
     async listarFormularios(res, querys) {
-        const formularios = await this.formularioPracticaService.listarFormularios(querys);
+        const { formularios, totalItems } = await this.formularioPracticaService.listarFormularios(querys);
         res.status(common_1.HttpStatus.OK).json({
             message: 'Los formularios se listaron correctamente',
-            formularios
+            formularios,
+            totalItems
         });
     }
     async listarFormulariosPorLugar(res, querys, lugarID) {
-        const formularios = await this.formularioPracticaService.listarFormulariosPorLugar(lugarID, querys);
+        const { formularios, totalItems } = await this.formularioPracticaService.listarFormulariosPorLugar(lugarID, querys);
         res.status(common_1.HttpStatus.OK).json({
             message: 'Los formularios se listaron correctamente',
-            formularios
+            formularios,
+            totalItems
         });
     }
     async limpiarFormularios(res) {

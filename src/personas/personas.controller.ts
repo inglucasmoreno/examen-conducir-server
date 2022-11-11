@@ -35,10 +35,11 @@ export class PersonasController {
     @UseGuards(JwtAuthGuard)
     @Get('/')
     async listarPersonas(@Res() res, @Query() querys) {
-        const personas = await this.personasService.listarPersonas(querys);
+        const { personas, totalItems } = await this.personasService.listarPersonas(querys);
         res.status(HttpStatus.OK).json({
             message: 'Listado de personas correcto',
-            personas
+            personas,
+            totalItems
         });            
     }
 

@@ -9,13 +9,48 @@ export class EstadisticasService {
     constructor(@InjectModel('Est-preguntas') private readonly estPreguntasModel: Model<IEstPreguntas>){}
   
     // Estadisticas de preguntas
-    async preguntas(querys: any): Promise<IEstPreguntas[]> {
+    async preguntas(querys: any): Promise<any> {
                 
-        const {columna, direccion} = querys;
+        const {
+            columna,
+            direccion,
+            desde,
+            registerpp,
+            activo,
+            parametro,
+        } = querys;
 
-        const pipeline = [];
+        // Filtrado
+        let pipeline = [];
+        let pipelineTotal = [];
 
-        pipeline.push({ $match: { } });
+        pipeline.push({ $match: {} });
+        pipelineTotal.push({ $match: {} });
+
+        // Activo / Inactivo
+        let filtroActivo = {};
+        if (activo && activo !== '') {
+            filtroActivo = { activo: activo === 'true' ? true : false };
+            pipeline.push({ $match: filtroActivo });
+            pipelineTotal.push({ $match: filtroActivo });
+        }
+
+        // Filtro por parametros
+        if (parametro && parametro !== '') {
+
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0) parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else parametroFinal = porPartes[i] + '.*';
+            }
+
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex } ] } });
+            pipelineTotal.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex } ] } });
+
+        }
 
         // Join con examenes
         pipeline.push({
@@ -56,8 +91,19 @@ export class EstadisticasService {
             pipeline.push({$sort: ordenar});
         } 
 
-        const estadisticas = await this.estPreguntasModel.aggregate(pipeline);
-        return estadisticas;
+        // Paginacion
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+
+        const [estadisticas, estadisticasTotal] = await Promise.all([
+            this.estPreguntasModel.aggregate(pipeline),
+            this.estPreguntasModel.aggregate(pipelineTotal),
+        ]);
+        
+        return {
+            estadisticas,
+            totalItems: estadisticasTotal.length
+        }
+
     }
 
 }

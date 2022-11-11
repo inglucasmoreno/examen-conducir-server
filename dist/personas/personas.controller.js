@@ -37,10 +37,11 @@ let PersonasController = class PersonasController {
         });
     }
     async listarPersonas(res, querys) {
-        const personas = await this.personasService.listarPersonas(querys);
+        const { personas, totalItems } = await this.personasService.listarPersonas(querys);
         res.status(common_1.HttpStatus.OK).json({
             message: 'Listado de personas correcto',
-            personas
+            personas,
+            totalItems
         });
     }
     async crearPersona(res, personaDTO) {

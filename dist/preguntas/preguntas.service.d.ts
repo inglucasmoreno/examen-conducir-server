@@ -6,7 +6,7 @@ export declare class PreguntasService {
     private readonly preguntasModel;
     constructor(preguntasModel: Model<IPregunta>);
     getPregunta(id: string): Promise<IPregunta>;
-    listarPreguntas(querys: any): Promise<IPregunta[]>;
+    listarPreguntas(querys: any): Promise<any>;
     crearPregunta(preguntaDTO: PreguntaDTO): Promise<IPregunta>;
     actualizarPregunta(id: string, preguntaUpdateDTO: PreguntaUpdateDTO): Promise<IPregunta>;
 }

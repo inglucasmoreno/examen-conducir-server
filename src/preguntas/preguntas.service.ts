@@ -8,35 +8,88 @@ import { IPregunta } from './interface/preguntas.interface';
 @Injectable()
 export class PreguntasService {
 
-    constructor(@InjectModel('Pregunta') private readonly preguntasModel: Model<IPregunta>){}
+    constructor(@InjectModel('Pregunta') private readonly preguntasModel: Model<IPregunta>) { }
 
     // Pregunta por ID
     async getPregunta(id: string): Promise<IPregunta> {
         const pregunta = await this.preguntasModel.findById(id);
-        if(!pregunta) throw new NotFoundException('La pregunta no existe');
+        if (!pregunta) throw new NotFoundException('La pregunta no existe');
         return pregunta;
-    }  
-    
+    }
+
     // Listar preguntas
-    async listarPreguntas(querys: any): Promise<IPregunta[]> {
+    async listarPreguntas(querys: any): Promise<any> {
 
-        const {columna, direccion} = querys;
+        const {
+            columna,
+            direccion,
+            desde,
+            registerpp,
+            activo,
+            parametro,
+        } = querys;
 
-        // Ordenar
-        let ordenar = [columna || 'apellido', direccion || 1];     
+        // Filtrado
+        let pipeline = [];
+        let pipelineTotal = [];
 
-        const preguntas = await this.preguntasModel.find().sort([ordenar]);
-        return preguntas;
-    }  
+        pipeline.push({ $match: {} });
+        pipelineTotal.push({ $match: {} });
+
+        // Activo / Inactivo
+        let filtroActivo = {};
+        if (activo && activo !== '') {
+            filtroActivo = { activo: activo === 'true' ? true : false };
+            pipeline.push({ $match: filtroActivo });
+            pipelineTotal.push({ $match: filtroActivo });
+        }
+
+        // Filtro por parametros
+        if (parametro && parametro !== '') {
+
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0) parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else parametroFinal = porPartes[i] + '.*';
+            }
+
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex } ] } });
+            pipelineTotal.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex } ] } });
+
+        }
+
+        // Ordenando datos
+        const ordenar: any = {};
+        if (columna) {
+            ordenar[String(columna)] = Number(direccion);
+            pipeline.push({ $sort: ordenar });
+        }
+
+        // Paginacion
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+
+        const [preguntas, preguntasTotal] = await Promise.all([
+            this.preguntasModel.aggregate(pipeline),
+            this.preguntasModel.aggregate(pipelineTotal),
+        ]);
+        
+        return {
+            preguntas,
+            totalItems: preguntasTotal.length
+        }
+    }
 
     // Crear pregunta
     async crearPregunta(preguntaDTO: PreguntaDTO): Promise<IPregunta> {
-        
-        const preguntas = await this.preguntasModel.find().sort({'numero': -1});
 
-        if(preguntas.length !== 0){
+        const preguntas = await this.preguntasModel.find().sort({ 'numero': -1 });
+
+        if (preguntas.length !== 0) {
             preguntaDTO.numero = preguntas[0].numero + 1;
-        }else{
+        } else {
             preguntaDTO.numero = 1;
         }
 
@@ -49,11 +102,11 @@ export class PreguntasService {
 
         // Se verifica si la pregunta a actualizar existe
         const preguntaExiste = await this.getPregunta(id);
-        if(!preguntaExiste) throw new NotFoundException('La pregunta no existe');
+        if (!preguntaExiste) throw new NotFoundException('La pregunta no existe');
 
-        const pregunta = await this.preguntasModel.findByIdAndUpdate(id, preguntaUpdateDTO, {new: true});
+        const pregunta = await this.preguntasModel.findByIdAndUpdate(id, preguntaUpdateDTO, { new: true });
         return pregunta;
-    
+
     }
 
 }

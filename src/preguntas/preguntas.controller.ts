@@ -24,10 +24,11 @@ export class PreguntasController {
     @UseGuards(JwtAuthGuard)
     @Get('/')
     async listarPreguntas(@Res() res, @Query() querys) {
-        const preguntas = await this.preguntasService.listarPreguntas(querys);
+        const { preguntas, totalItems } = await this.preguntasService.listarPreguntas(querys);
         res.status(HttpStatus.OK).json({
             message: 'Listado de preguntas correcto',
-            preguntas
+            preguntas,
+            totalItems
         });             
     }
 

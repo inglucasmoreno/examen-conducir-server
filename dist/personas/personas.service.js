@@ -25,19 +25,23 @@ let PersonasService = class PersonasService {
         const pipeline = [];
         const idPersona = new mongoose.Types.ObjectId(id);
         pipeline.push({ $match: { _id: idPersona } });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'userCreator',
                 foreignField: '_id',
                 as: 'userCreator'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$userCreator' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'userUpdator',
                 foreignField: '_id',
                 as: 'userUpdator'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$userUpdator' });
         const persona = await this.personaModel.aggregate(pipeline);
         if (!persona)
@@ -49,11 +53,44 @@ let PersonasService = class PersonasService {
         return persona;
     }
     async listarPersonas(querys) {
-        const { columna, direccion } = querys;
-        let ordenar = [columna || 'apellido', direccion || 1];
-        const personas = await this.personaModel.find()
-            .sort([ordenar]);
-        return personas;
+        const { columna, direccion, desde, registerpp, activo, parametro, } = querys;
+        let pipeline = [];
+        let pipelineTotal = [];
+        pipeline.push({ $match: {} });
+        pipelineTotal.push({ $match: {} });
+        let filtroActivo = {};
+        if (activo && activo !== '') {
+            filtroActivo = { activo: activo === 'true' ? true : false };
+            pipeline.push({ $match: filtroActivo });
+            pipelineTotal.push({ $match: filtroActivo });
+        }
+        if (parametro && parametro !== '') {
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0)
+                    parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else
+                    parametroFinal = porPartes[i] + '.*';
+            }
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ apellido: regex }, { nombre: regex }, { dni: regex }] } });
+            pipelineTotal.push({ $match: { $or: [{ apellido: regex }, { nombre: regex }, { dni: regex }] } });
+        }
+        const ordenar = {};
+        if (columna) {
+            ordenar[String(columna)] = Number(direccion);
+            pipeline.push({ $sort: ordenar });
+        }
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+        const [personas, personasTotal] = await Promise.all([
+            this.personaModel.aggregate(pipeline),
+            this.personaModel.aggregate(pipelineTotal),
+        ]);
+        return {
+            personas,
+            totalItems: personasTotal.length
+        };
     }
     async crearPersona(personaDTO) {
         const { dni } = personaDTO;

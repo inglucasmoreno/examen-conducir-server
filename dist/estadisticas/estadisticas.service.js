@@ -21,9 +21,30 @@ let EstadisticasService = class EstadisticasService {
         this.estPreguntasModel = estPreguntasModel;
     }
     async preguntas(querys) {
-        const { columna, direccion } = querys;
-        const pipeline = [];
+        const { columna, direccion, desde, registerpp, activo, parametro, } = querys;
+        let pipeline = [];
+        let pipelineTotal = [];
         pipeline.push({ $match: {} });
+        pipelineTotal.push({ $match: {} });
+        let filtroActivo = {};
+        if (activo && activo !== '') {
+            filtroActivo = { activo: activo === 'true' ? true : false };
+            pipeline.push({ $match: filtroActivo });
+            pipelineTotal.push({ $match: filtroActivo });
+        }
+        if (parametro && parametro !== '') {
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0)
+                    parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else
+                    parametroFinal = porPartes[i] + '.*';
+            }
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
+            pipelineTotal.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
+        }
         pipeline.push({
             $lookup: {
                 from: 'examenes',
@@ -55,8 +76,15 @@ let EstadisticasService = class EstadisticasService {
             ordenar[String(columna)] = Number(direccion);
             pipeline.push({ $sort: ordenar });
         }
-        const estadisticas = await this.estPreguntasModel.aggregate(pipeline);
-        return estadisticas;
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+        const [estadisticas, estadisticasTotal] = await Promise.all([
+            this.estPreguntasModel.aggregate(pipeline),
+            this.estPreguntasModel.aggregate(pipelineTotal),
+        ]);
+        return {
+            estadisticas,
+            totalItems: estadisticasTotal.length
+        };
     }
 };
 EstadisticasService = __decorate([

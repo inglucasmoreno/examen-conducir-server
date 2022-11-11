@@ -27,7 +27,7 @@ let UsuariosService = class UsuariosService {
         return usuario;
     }
     async getUsuarioPorNombre(nombreUsuario) {
-        const usuario = await this.usuariosModel.findOne({ usuario: nombreUsuario });
+        const usuario = await this.usuariosModel.findOne({ usuario: nombreUsuario, activo: true });
         return usuario;
     }
     async getUsuarioPorDni(dniUsuario) {

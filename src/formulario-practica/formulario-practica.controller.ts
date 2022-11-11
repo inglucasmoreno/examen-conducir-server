@@ -24,10 +24,11 @@ export class FormularioPracticaController {
     @UseGuards(JwtAuthGuard)
     @Get('/')
     async listarFormularios(@Res() res, @Query() querys) {
-        const formularios = await this.formularioPracticaService.listarFormularios(querys);
+        const {formularios, totalItems} = await this.formularioPracticaService.listarFormularios(querys);
         res.status(HttpStatus.OK).json({
             message: 'Los formularios se listaron correctamente',
-            formularios
+            formularios,
+            totalItems
         });            
     }
 
@@ -35,10 +36,11 @@ export class FormularioPracticaController {
     @UseGuards(JwtAuthGuard)
     @Get('/lugar/:id')
     async listarFormulariosPorLugar(@Res() res, @Query() querys, @Param('id') lugarID) {
-        const formularios = await this.formularioPracticaService.listarFormulariosPorLugar(lugarID, querys);
+        const {formularios, totalItems} = await this.formularioPracticaService.listarFormulariosPorLugar(lugarID, querys);
         res.status(HttpStatus.OK).json({
             message: 'Los formularios se listaron correctamente',
-            formularios
+            formularios,
+            totalItems
         });            
     }
 
