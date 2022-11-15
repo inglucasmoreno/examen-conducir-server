@@ -43,9 +43,12 @@ exports.preguntaSchema = new mongoose_1.Schema({
         type: String,
         require: 'El alcance de la pregunta es un campo obligatorio',
     },
+    eliminatoria: {
+        type: Boolean,
+        default: false
+    },
     activo: {
         type: Boolean,
-        required: true,
         default: true
     },
 }, { timestamps: true });

@@ -8,6 +8,7 @@ export declare class PreguntaUpdateDTO {
     readonly respuesta_correcta: string;
     readonly respuesta_incorrecta_1: string;
     readonly respuesta_incorrecta_2: string;
+    readonly eliminatoria: boolean;
     readonly alcance: string;
     readonly activo: boolean;
 }

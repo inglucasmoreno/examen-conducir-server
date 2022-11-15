@@ -10,5 +10,6 @@ export interface IPregunta extends Document {
     readonly respuestas_incorrecta_1: string;
     readonly respuestas_incorrecta_2: string;
     readonly alcance: string;
+    readonly eliminatoria: boolean;
     readonly activo: boolean;
 }

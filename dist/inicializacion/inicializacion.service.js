@@ -82,7 +82,8 @@ let InicializacionService = class InicializacionService {
             dataExcel[0].respuesta_incorrecta_1 &&
             dataExcel[0].respuesta_incorrecta_2 &&
             dataExcel[0].frecuencia &&
-            dataExcel[0].alcance;
+            dataExcel[0].alcance &&
+            dataExcel[0].eliminatoria;
         if (!condicion)
             throw new common_1.NotFoundException('Excel con formato incorrecto');
         let registrosCargados = 0;
@@ -94,7 +95,8 @@ let InicializacionService = class InicializacionService {
                 pregunta.respuesta_incorrecta_1 &&
                 pregunta.respuesta_incorrecta_2 &&
                 pregunta.frecuencia &&
-                pregunta.alcance) {
+                pregunta.alcance &&
+                pregunta.eliminatoria) {
                 const data = {
                     numero: pregunta.numero,
                     descripcion: pregunta.descripcion,
@@ -103,6 +105,7 @@ let InicializacionService = class InicializacionService {
                     respuesta_incorrecta_2: pregunta.respuesta_incorrecta_2,
                     frecuencia: pregunta.frecuencia,
                     alcance: pregunta.alcance,
+                    eliminatoria: pregunta.eliminatoria === 'SI' ? true : false,
                     creatorUser: usuario,
                     updatorUser: usuario
                 };

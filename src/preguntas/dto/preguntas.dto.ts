@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsBoolean, IsString } from "class-validator";
 
 export class PreguntaDTO {
     
@@ -26,6 +26,8 @@ export class PreguntaDTO {
 
     @IsString()
     readonly alcance: string;
+   
+    readonly eliminatoria: boolean;
 
     readonly activo: boolean;
     

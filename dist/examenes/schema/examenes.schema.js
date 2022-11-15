@@ -38,6 +38,7 @@ exports.examenSchema = new mongoose_1.Schema({
             pregunta_img: Boolean,
             url_img: String,
             descripcion: String,
+            eliminatoria: Boolean,
             respuesta_correcta: String,
             respuesta_incorrecta_1: String,
             respuesta_incorrecta_2: String,

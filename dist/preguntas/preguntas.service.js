@@ -67,13 +67,14 @@ let PreguntasService = class PreguntasService {
         };
     }
     async crearPregunta(preguntaDTO) {
-        const preguntas = await this.preguntasModel.find().sort({ 'numero': -1 });
-        if (preguntas.length !== 0) {
+        const preguntas = await this.preguntasModel
+            .find()
+            .sort({ 'numero': -1 })
+            .limit(1);
+        if (preguntas.length !== 0)
             preguntaDTO.numero = preguntas[0].numero + 1;
-        }
-        else {
+        else
             preguntaDTO.numero = 1;
-        }
         const pregunta = new this.preguntasModel(preguntaDTO);
         return await pregunta.save();
     }

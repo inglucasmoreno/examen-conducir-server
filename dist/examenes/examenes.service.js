@@ -43,26 +43,32 @@ let ExamenesService = class ExamenesService {
         else if (activo === 'false') {
             pipeline.push({ $match: { activo: false } });
         }
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'lugares',
                 localField: 'lugar',
                 foreignField: '_id',
                 as: 'lugar'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$lugar' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'usuario',
                 foreignField: '_id',
                 as: 'usuario'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$usuario' });
         const examen = await this.examenModel.aggregate(pipeline);
         if (!examen[0])
@@ -72,26 +78,32 @@ let ExamenesService = class ExamenesService {
     async getExamenDni(dni) {
         const pipeline = [];
         pipeline.push({ $match: { activo: true } });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'lugares',
                 localField: 'lugar',
                 foreignField: '_id',
                 as: 'lugar'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$lugar' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'usuario',
                 foreignField: '_id',
                 as: 'usuario'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$usuario' });
         pipeline.push({ $match: { 'persona.dni': dni } });
         const examen = await this.examenModel.aggregate(pipeline);
@@ -104,26 +116,32 @@ let ExamenesService = class ExamenesService {
         pipeline.push({ $match: { activo: true } });
         const personaObject = new mongoose.Types.ObjectId(persona);
         pipeline.push({ $match: { persona: personaObject } });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'lugares',
                 localField: 'lugar',
                 foreignField: '_id',
                 as: 'lugar'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$lugar' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'usuario',
                 foreignField: '_id',
                 as: 'usuario'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$usuario' });
         const examen = await this.examenModel.aggregate(pipeline);
         return examen[0];
@@ -165,26 +183,32 @@ let ExamenesService = class ExamenesService {
             pipeline.push({ $match: { estado } });
         if (clase && clase !== '')
             pipeline.push({ $match: { tipo_licencia: clase } });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'lugares',
                 localField: 'lugar',
                 foreignField: '_id',
                 as: 'lugar'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$lugar' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'usuario',
                 foreignField: '_id',
                 as: 'usuario'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$usuario' });
         if (usuario && usuario.trim() !== '')
             pipeline.push({ $match: { 'usuario.dni': usuario } });
@@ -211,26 +235,32 @@ let ExamenesService = class ExamenesService {
         if (lugar !== '' && lugar !== undefined) {
             pipeline.push({ $match: { lugar: idLugar } });
         }
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'lugares',
                 localField: 'lugar',
                 foreignField: '_id',
                 as: 'lugar'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$lugar' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'personas',
                 localField: 'persona',
                 foreignField: '_id',
                 as: 'persona'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$persona' });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'usuario',
                 foreignField: '_id',
                 as: 'usuario'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$usuario' });
         const ordenar = {};
         if (columna) {
@@ -251,7 +281,9 @@ let ExamenesService = class ExamenesService {
         else if (examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E')
             cantidadPreguntas = 60;
         else if (examenDTO.tipo_licencia === 'G')
-            cantidadPreguntas = 13;
+            cantidadPreguntas = 14;
+        else if (examenDTO.tipo_licencia === 'J')
+            cantidadPreguntas = 14;
         else if (examenDTO.tipo_licencia === 'H')
             cantidadPreguntas = 17;
         let cantidad_6 = 0;
@@ -388,12 +420,14 @@ let ExamenesService = class ExamenesService {
         const { columna, direccion } = querys;
         const pipeline = [];
         pipeline.push({ $match: { examen: new mongoose.Types.ObjectId(examenID) } });
-        pipeline.push({ $lookup: {
+        pipeline.push({
+            $lookup: {
                 from: 'usuarios',
                 localField: 'usuario',
                 foreignField: '_id',
                 as: 'usuario'
-            } });
+            }
+        });
         pipeline.push({ $unwind: '$usuario' });
         const ordenar = {};
         if (columna) {
@@ -436,12 +470,18 @@ let ExamenesService = class ExamenesService {
             examenUpdateDTO.aprobado = true;
         if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
-        if (examenDB.tipo_licencoa === 'G' && cantidad_correctas >= 13)
+        if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 13)
+            examenUpdateDTO.aprobado = true;
+        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 13)
             examenUpdateDTO.aprobado = true;
         if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16)
             examenUpdateDTO.aprobado = true;
         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
+        examenUpdateDTO.preguntas.map(pregunta => {
+            if (!pregunta.seleccion_correcta && pregunta.eliminatoria)
+                examenUpdateDTO.aprobado = false;
+        });
         return examenUpdateDTO;
     }
     async imprimirExamen(examen) {

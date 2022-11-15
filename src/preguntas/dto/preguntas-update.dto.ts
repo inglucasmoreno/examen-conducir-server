@@ -20,6 +20,8 @@ export class PreguntaUpdateDTO {
 
     readonly respuesta_incorrecta_2: string;
 
+    readonly eliminatoria: boolean;
+
     readonly alcance: string;
 
     readonly activo: boolean;

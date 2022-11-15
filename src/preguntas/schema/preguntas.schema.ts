@@ -52,9 +52,13 @@ export const preguntaSchema = new Schema({
         require: 'El alcance de la pregunta es un campo obligatorio',      
     },
 
+    eliminatoria: {
+        type: Boolean,
+        default: false
+    },
+
     activo: {
         type: Boolean,
-        required: true,
         default: true
     },
 

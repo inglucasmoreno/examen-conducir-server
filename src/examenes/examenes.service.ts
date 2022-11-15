@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import * as mongoose  from 'mongoose';
+import * as mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExamenDTO } from './dto/examenes.dto';
@@ -22,14 +22,14 @@ export class ExamenesService {
     public url_destino_pdf_examen = process.env.URL_DESTINO_PDF_EXAMEN || './public/pdf/examen.pdf';
 
     // Variables para desarrollo
-    
+
     // public url_template_examen = '../pdf/template/examen.html';
     // public url_destino_pdf_examen = '../public/pdf/examen.pdf';
 
     constructor(@InjectModel('Examen') private readonly examenModel: Model<IExamen>,
-                @InjectModel('Est-preguntas') private readonly estPreguntasModel: Model<IEstPreguntas>,
-                @InjectModel('Reactivacion') private readonly reactivacionModel: Model<IRectivacion>,
-                @InjectModel('Pregunta') private readonly preguntaModel: Model<IPregunta>){}
+        @InjectModel('Est-preguntas') private readonly estPreguntasModel: Model<IEstPreguntas>,
+        @InjectModel('Reactivacion') private readonly reactivacionModel: Model<IRectivacion>,
+        @InjectModel('Pregunta') private readonly preguntaModel: Model<IPregunta>) { }
 
     // Examen por ID
     async getExamen(id: string, activo: string): Promise<any> {
@@ -38,51 +38,57 @@ export class ExamenesService {
         const pipeline = [];
 
         // Busqueda por ID
-        pipeline.push({$match:{ _id: idObject }});
+        pipeline.push({ $match: { _id: idObject } });
 
         // Busqueda por activo/inactivo
-        if(activo === 'true'){
-            pipeline.push({$match:{ activo: true }});
-        }else if(activo === 'false'){
-            pipeline.push({$match:{ activo: false }});
+        if (activo === 'true') {
+            pipeline.push({ $match: { activo: true } });
+        } else if (activo === 'false') {
+            pipeline.push({ $match: { activo: false } });
         }
 
         // Join (lugar)
         pipeline.push(
-            { $lookup: { // Lookup - Lugar
-                from: 'lugares',
-                localField: 'lugar',
-                foreignField: '_id',
-                as: 'lugar'
-            }},
+            {
+                $lookup: { // Lookup - Lugar
+                    from: 'lugares',
+                    localField: 'lugar',
+                    foreignField: '_id',
+                    as: 'lugar'
+                }
+            },
         );
         pipeline.push({ $unwind: '$lugar' });
 
         // Join (personas)
         pipeline.push(
-            { $lookup: { // Lookup - personas
-                from: 'personas',
-                localField: 'persona',
-                foreignField: '_id',
-                as: 'persona'
-            }},
+            {
+                $lookup: { // Lookup - personas
+                    from: 'personas',
+                    localField: 'persona',
+                    foreignField: '_id',
+                    as: 'persona'
+                }
+            },
         );
         pipeline.push({ $unwind: '$persona' });
 
         // Join (usuarios)
         pipeline.push(
-            { $lookup: { // Lookup - usuarios
-                from: 'usuarios',
-                localField: 'usuario',
-                foreignField: '_id',
-                as: 'usuario'
-            }},
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
         );
         pipeline.push({ $unwind: '$usuario' });
 
         const examen = await this.examenModel.aggregate(pipeline);
 
-        if(!examen[0]) throw new NotFoundException('El examen no existe');
+        if (!examen[0]) throw new NotFoundException('El examen no existe');
         return examen[0];
 
     }
@@ -97,34 +103,40 @@ export class ExamenesService {
 
         // Join (lugar)
         pipeline.push(
-            { $lookup: { // Lookup - Lugar
-                from: 'lugares',
-                localField: 'lugar',
-                foreignField: '_id',
-                as: 'lugar'
-            }},
+            {
+                $lookup: { // Lookup - Lugar
+                    from: 'lugares',
+                    localField: 'lugar',
+                    foreignField: '_id',
+                    as: 'lugar'
+                }
+            },
         );
         pipeline.push({ $unwind: '$lugar' });
 
         // Join (personas)
         pipeline.push(
-            { $lookup: { // Lookup - personas
-                from: 'personas',
-                localField: 'persona',
-                foreignField: '_id',
-                as: 'persona'
-            }},
+            {
+                $lookup: { // Lookup - personas
+                    from: 'personas',
+                    localField: 'persona',
+                    foreignField: '_id',
+                    as: 'persona'
+                }
+            },
         );
         pipeline.push({ $unwind: '$persona' });
 
         // Join (usuarios)
         pipeline.push(
-            { $lookup: { // Lookup - usuarios
-                from: 'usuarios',
-                localField: 'usuario',
-                foreignField: '_id',
-                as: 'usuario'
-            }},
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
         );
         pipeline.push({ $unwind: '$usuario' });
 
@@ -133,7 +145,7 @@ export class ExamenesService {
 
         const examen = await this.examenModel.aggregate(pipeline);
 
-        if(!examen[0]) throw new NotFoundException('El examen no existe');
+        if (!examen[0]) throw new NotFoundException('El examen no existe');
         return examen[0];
 
     }
@@ -148,38 +160,44 @@ export class ExamenesService {
 
         // Filtramos por persona
         const personaObject = new mongoose.Types.ObjectId(persona);
-        pipeline.push({$match:{ persona: personaObject }});
+        pipeline.push({ $match: { persona: personaObject } });
 
         // Join (lugar)
         pipeline.push(
-            { $lookup: { // Lookup - Lugar
-                from: 'lugares',
-                localField: 'lugar',
-                foreignField: '_id',
-                as: 'lugar'
-            }},
+            {
+                $lookup: { // Lookup - Lugar
+                    from: 'lugares',
+                    localField: 'lugar',
+                    foreignField: '_id',
+                    as: 'lugar'
+                }
+            },
         );
         pipeline.push({ $unwind: '$lugar' });
 
         // Join (personas)
         pipeline.push(
-            { $lookup: { // Lookup - personas
-                from: 'personas',
-                localField: 'persona',
-                foreignField: '_id',
-                as: 'persona'
-            }},
+            {
+                $lookup: { // Lookup - personas
+                    from: 'personas',
+                    localField: 'persona',
+                    foreignField: '_id',
+                    as: 'persona'
+                }
+            },
         );
         pipeline.push({ $unwind: '$persona' });
 
         // Join (usuarios)
         pipeline.push(
-            { $lookup: { // Lookup - usuarios
-                from: 'usuarios',
-                localField: 'usuario',
-                foreignField: '_id',
-                as: 'usuario'
-            }},
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
         );
         pipeline.push({ $unwind: '$usuario' });
 
@@ -197,20 +215,21 @@ export class ExamenesService {
 
         const fechaHoy = new Date();
 
-        pipeline.push({$match: { activo: true }});
+        pipeline.push({ $match: { activo: true } });
 
         // Se listan los examenes antiguos
-        pipeline.push({$match:{ createdAt: { $lte: new Date(format(fechaHoy, 'yyyy-MM-dd')) } }});
+        pipeline.push({ $match: { createdAt: { $lte: new Date(format(fechaHoy, 'yyyy-MM-dd')) } } });
         const examenes = await this.examenModel.aggregate(pipeline);
 
         // Se dan de baja a los examenes listados
-        if(examenes.length !== 0){
-            examenes.map( async examen => {
+        if (examenes.length !== 0) {
+            examenes.map(async examen => {
                 await this.examenModel.findByIdAndUpdate(examen._id, {
                     estado: 'Finalizado',
                     baja_tiempo: true,
                     baja_motivo: 'Finalizado por exceso de tiempo',
-                    activo: false });
+                    activo: false
+                });
             })
         }
 
@@ -222,7 +241,7 @@ export class ExamenesService {
     async listarExamenesHistorial(querys: any, data: any): Promise<IExamen[]> {
 
         // Parametros - Ordenamiento
-        const {columna, direccion } = querys;
+        const { columna, direccion } = querys;
 
         // Body - Datos de busqueda
         const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string } = data;
@@ -230,69 +249,75 @@ export class ExamenesService {
         const pipeline = [];
 
         // Filtro - Intervalo de fechas
-        if(fechaDesde?.trim() !== '') pipeline.push({$match: { createdAt: { $gte: new Date(fechaDesde) } }});
-        if(fechaHasta?.trim() !== '') pipeline.push({$match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } }});
+        if (fechaDesde?.trim() !== '') pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+        if (fechaHasta?.trim() !== '') pipeline.push({ $match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } } });
 
         // Filtro - Lugar de creacion
-        if(lugar.trim() !== ''){
+        if (lugar.trim() !== '') {
             let idLugar: any = '';
             idLugar = new mongoose.Types.ObjectId(lugar);
-            pipeline.push({$match: { lugar: idLugar }});
+            pipeline.push({ $match: { lugar: idLugar } });
         }
 
         // Filtro - Estado de examen
-        if(nro_examen_string && nro_examen_string !== '')pipeline.push({$match: { nro_examen_string }});
+        if (nro_examen_string && nro_examen_string !== '') pipeline.push({ $match: { nro_examen_string } });
 
         // Filtro - Estado de examen
-        if(estado && estado !== '')pipeline.push({$match: { estado }});
+        if (estado && estado !== '') pipeline.push({ $match: { estado } });
 
         // Filtro - Tipo de licencia
-        if(clase && clase !== '')pipeline.push({$match: { tipo_licencia: clase }});
+        if (clase && clase !== '') pipeline.push({ $match: { tipo_licencia: clase } });
 
         // Join (lugar)
         pipeline.push(
-            { $lookup: { // Lookup - Lugar
-                from: 'lugares',
-                localField: 'lugar',
-                foreignField: '_id',
-                as: 'lugar'
-            }},
+            {
+                $lookup: { // Lookup - Lugar
+                    from: 'lugares',
+                    localField: 'lugar',
+                    foreignField: '_id',
+                    as: 'lugar'
+                }
+            },
         );
         pipeline.push({ $unwind: '$lugar' });
 
         // Join (personas)
         pipeline.push(
-            { $lookup: { // Lookup - personas
-                from: 'personas',
-                localField: 'persona',
-                foreignField: '_id',
-                as: 'persona'
-            }},
+            {
+                $lookup: { // Lookup - personas
+                    from: 'personas',
+                    localField: 'persona',
+                    foreignField: '_id',
+                    as: 'persona'
+                }
+            },
         );
         pipeline.push({ $unwind: '$persona' });
 
         pipeline.push(
-        // Join (usuarios)
-            { $lookup: { // Lookup - usuarios
-                from: 'usuarios',
-                localField: 'usuario',
-                foreignField: '_id',
-                as: 'usuario'
-            }},
+            // Join (usuarios)
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
         );
         pipeline.push({ $unwind: '$usuario' });
 
         // Filtro - Usuarios (DNI)
-        if( usuario && usuario.trim() !== '') pipeline.push({$match: { 'usuario.dni': usuario }});
+        if (usuario && usuario.trim() !== '') pipeline.push({ $match: { 'usuario.dni': usuario } });
 
-         // Filtro - Destino de examen (DNI)
-         if( persona && persona.trim() !== '') pipeline.push({$match: { 'persona.dni': persona }});
+        // Filtro - Destino de examen (DNI)
+        if (persona && persona.trim() !== '') pipeline.push({ $match: { 'persona.dni': persona } });
 
         // Ordenando datos
         const ordenar: any = {};
-        if(columna){
+        if (columna) {
             ordenar[String(columna)] = Number(direccion);
-            pipeline.push({$sort: ordenar});
+            pipeline.push({ $sort: ordenar });
         }
 
         const examenes = await this.examenModel.aggregate(pipeline);
@@ -305,60 +330,66 @@ export class ExamenesService {
     // Listar examenes del dia de hoy
     async listarExamenes(querys: any): Promise<IExamen[]> {
 
-        const {columna, direccion, lugar} = querys;
+        const { columna, direccion, lugar } = querys;
 
         let idLugar: any = '';
         const pipeline = [];
 
         // Filtro por fecha -> Hoy
-        const fechaDesde = new Date(format(new Date(),'MM/dd/yyyy')); // Fecha de hoy
-        const fechaHasta = add(new Date(fechaDesde), {days: 1}); // Fecha de hoy + 1 dia
+        const fechaDesde = new Date(format(new Date(), 'MM/dd/yyyy')); // Fecha de hoy
+        const fechaHasta = add(new Date(fechaDesde), { days: 1 }); // Fecha de hoy + 1 dia
 
-        pipeline.push({$match: { createdAt: { $gte: fechaDesde } }});
-        pipeline.push({$match: { createdAt: { $lte: new Date(fechaHasta) } }});
+        pipeline.push({ $match: { createdAt: { $gte: fechaDesde } } });
+        pipeline.push({ $match: { createdAt: { $lte: new Date(fechaHasta) } } });
 
         // Se filtra por lugar si es necesario
-        if(lugar !== '' && lugar !== undefined) idLugar = new mongoose.Types.ObjectId(lugar);
-        if(lugar !== '' && lugar !== undefined){ pipeline.push({$match: { lugar: idLugar }}); }
+        if (lugar !== '' && lugar !== undefined) idLugar = new mongoose.Types.ObjectId(lugar);
+        if (lugar !== '' && lugar !== undefined) { pipeline.push({ $match: { lugar: idLugar } }); }
 
         // Join (lugar)
         pipeline.push(
-            { $lookup: { // Lookup - Lugar
-                from: 'lugares',
-                localField: 'lugar',
-                foreignField: '_id',
-                as: 'lugar'
-            }},
+            {
+                $lookup: { // Lookup - Lugar
+                    from: 'lugares',
+                    localField: 'lugar',
+                    foreignField: '_id',
+                    as: 'lugar'
+                }
+            },
         );
         pipeline.push({ $unwind: '$lugar' });
 
         // Join (personas)
         pipeline.push(
-            { $lookup: { // Lookup - personas
-                from: 'personas',
-                localField: 'persona',
-                foreignField: '_id',
-                as: 'persona'
-            }},
+            {
+                $lookup: { // Lookup - personas
+                    from: 'personas',
+                    localField: 'persona',
+                    foreignField: '_id',
+                    as: 'persona'
+                }
+            },
         );
         pipeline.push({ $unwind: '$persona' });
 
         // Join (usuarios)
         pipeline.push(
-            { $lookup: { // Lookup - usuarios
-                from: 'usuarios',
-                localField: 'usuario',
-                foreignField: '_id',
-                as: 'usuario'
-            }},
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
         );
         pipeline.push({ $unwind: '$usuario' });
 
         // Ordenando datos
         const ordenar: any = {};
-        if(columna){
+        if (columna) {
             ordenar[String(columna)] = Number(direccion);
-            pipeline.push({$sort: ordenar});
+            pipeline.push({ $sort: ordenar });
         }
 
         const examenes = await this.examenModel.aggregate(pipeline);
@@ -376,7 +407,7 @@ export class ExamenesService {
         const regex = new RegExp(examenDTO.tipo_licencia); // Expresion regular sin barras - La real seria /D/ por ejemplo
 
         // Se arma el arreglo de preguntas totales dependiendo de la licencia
-        let preguntas = await this.preguntaModel.find({alcance: regex, activo: true});
+        let preguntas = await this.preguntaModel.find({ alcance: regex, activo: true });
 
         // Cantidad de preguntas dependiendo del tipo de examen
         // Examen particular (A y B) = 50 preguntas
@@ -386,10 +417,11 @@ export class ExamenesService {
 
         let cantidadPreguntas: number = 0;
 
-        if(examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
-        else if(examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E') cantidadPreguntas = 60;
-        else if(examenDTO.tipo_licencia === 'G') cantidadPreguntas = 13;
-        else if(examenDTO.tipo_licencia === 'H') cantidadPreguntas = 17; // H - D4
+        if (examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
+        else if (examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E') cantidadPreguntas = 60;
+        else if (examenDTO.tipo_licencia === 'G') cantidadPreguntas = 14;
+        else if (examenDTO.tipo_licencia === 'J') cantidadPreguntas = 14; // J - E2
+        else if (examenDTO.tipo_licencia === 'H') cantidadPreguntas = 17; // H - D4
 
         // Cantidad de preguntas por peso
         let cantidad_6 = 0;
@@ -427,38 +459,38 @@ export class ExamenesService {
 
         // Adaptacion de cantidades
 
-        if(cantidadTotal_6 > 0){
+        if (cantidadTotal_6 > 0) {
             cantidad_6 = cantidadTotal_6;
             cantidad_4 = cantidad_4 - cantidadTotal_6;
         }
 
-        if(cantidadTotal_5 < cantidad_5){
+        if (cantidadTotal_5 < cantidad_5) {
             const diff = cantidad_5 - cantidadTotal_5;
             cantidad_5 = cantidad_5 - diff;
             cantidad_4 = cantidad_4 + diff;
         }
 
-        if(cantidadTotal_4 < cantidad_4){
+        if (cantidadTotal_4 < cantidad_4) {
             const diff = cantidad_4 - cantidadTotal_4;
             cantidad_4 = cantidad_4 - diff;
             cantidad_3 = cantidad_3 + diff;
         }
 
-        if(cantidadTotal_3 < cantidad_3){
+        if (cantidadTotal_3 < cantidad_3) {
             const diff = cantidad_3 - cantidadTotal_3;
             cantidad_3 = cantidad_3 - diff;
             cantidad_2 = cantidad_2 + diff;
         }
 
-        if(cantidadTotal_2 < cantidad_2){
+        if (cantidadTotal_2 < cantidad_2) {
             const diff = cantidad_2 - cantidadTotal_2;
             cantidad_2 = cantidad_2 - diff;
             cantidad_1 = cantidad_1 + diff;
         }
 
         // Preguntas de peso 6 - OBLIGATORIAS
-        if(cantidadTotal_6 > 0){
-            for(var i = 0; i < cantidad_6; i++){
+        if (cantidadTotal_6 > 0) {
+            for (var i = 0; i < cantidad_6; i++) {
 
                 const nroAleatorio = Math.floor(Math.random() * cantidadTotal_6); // Numero aleatorio [0 - preguntas.length]
                 const randomElement: any = preguntas_frecuencia_6[nroAleatorio];
@@ -477,7 +509,7 @@ export class ExamenesService {
         }
 
         // Preguntas de peso 5
-        for(var i = 0; i < cantidad_5; i++){
+        for (var i = 0; i < cantidad_5; i++) {
 
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_5); // Numero aleatorio [0 - preguntas.length]
             const randomElement: any = preguntas_frecuencia_5[nroAleatorio];
@@ -494,7 +526,7 @@ export class ExamenesService {
         }
 
         // Preguntas de peso 4
-        for(var i = 0; i < cantidad_4; i++){
+        for (var i = 0; i < cantidad_4; i++) {
 
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_4); // Numero aleatorio [0 - preguntas.length]
             const randomElement: any = preguntas_frecuencia_4[nroAleatorio];
@@ -512,7 +544,7 @@ export class ExamenesService {
         }
 
         // Preguntas de peso 3
-        for(var i = 0; i < cantidad_3; i++){
+        for (var i = 0; i < cantidad_3; i++) {
 
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_3); // Numero aleatorio [0 - preguntas.length]
             const randomElement: any = preguntas_frecuencia_3[nroAleatorio];
@@ -530,7 +562,7 @@ export class ExamenesService {
         }
 
         // Preguntas de peso 2
-        for(var i = 0; i < cantidad_2; i++){
+        for (var i = 0; i < cantidad_2; i++) {
 
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_2); // Numero aleatorio [0 - preguntas.length]
             const randomElement: any = preguntas_frecuencia_2[nroAleatorio];
@@ -547,8 +579,8 @@ export class ExamenesService {
 
         }
 
-        // // Preguntas de peso 1
-        for(var i = 0; i < cantidad_1; i++){
+        // Preguntas de peso 1
+        for (var i = 0; i < cantidad_1; i++) {
 
             const nroAleatorio = Math.floor(Math.random() * cantidadTotal_1); // Numero aleatorio [0 - preguntas.length]
             const randomElement: any = preguntas_frecuencia_1[nroAleatorio];
@@ -575,16 +607,16 @@ export class ExamenesService {
         let nro_examen = 0;
         let nro_examen_string = '';
 
-        if(examenes.length === 0){
+        if (examenes.length === 0) {
             nro_examen = 1;
             nro_examen_string = '000001';
-        }else{
+        } else {
             nro_examen = examenes[0].nro_examen + 1;
-            if(nro_examen < 10) nro_examen_string = '00000' + nro_examen.toString();
-            else if(nro_examen < 100) nro_examen_string = '0000' + nro_examen.toString();
-            else if(nro_examen < 1000) nro_examen_string = '000' + nro_examen.toString();
-            else if(nro_examen < 10000) nro_examen_string = '00' + nro_examen.toString();
-            else if(nro_examen < 100000) nro_examen_string = '0' + nro_examen.toString();
+            if (nro_examen < 10) nro_examen_string = '00000' + nro_examen.toString();
+            else if (nro_examen < 100) nro_examen_string = '0000' + nro_examen.toString();
+            else if (nro_examen < 1000) nro_examen_string = '000' + nro_examen.toString();
+            else if (nro_examen < 10000) nro_examen_string = '00' + nro_examen.toString();
+            else if (nro_examen < 100000) nro_examen_string = '0' + nro_examen.toString();
         }
 
         data.nro_examen = nro_examen;
@@ -599,34 +631,36 @@ export class ExamenesService {
 
     // Actualizar examen
     async actualizarExamen(id: string, examenUpdateDTO: any): Promise<IExamen> {
-        const examen = await this.examenModel.findByIdAndUpdate(id, examenUpdateDTO, {new: true});
+        const examen = await this.examenModel.findByIdAndUpdate(id, examenUpdateDTO, { new: true });
         return examen;
     }
 
     // Listar examenes
     async listarReactivaciones(examenID: any, querys: any): Promise<IExamen[]> {
 
-        const {columna, direccion} = querys;
+        const { columna, direccion } = querys;
 
         const pipeline = [];
-        pipeline.push({$match: { examen: new mongoose.Types.ObjectId(examenID) }});
+        pipeline.push({ $match: { examen: new mongoose.Types.ObjectId(examenID) } });
 
         // Join (usuarios)
         pipeline.push(
-            { $lookup: { // Lookup - usuarios
-                from: 'usuarios',
-                localField: 'usuario',
-                foreignField: '_id',
-                as: 'usuario'
-            }},
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
         );
         pipeline.push({ $unwind: '$usuario' });
 
         // Ordenando datos
         const ordenar: any = {};
-        if(columna){
+        if (columna) {
             ordenar[String(columna)] = Number(direccion);
-            pipeline.push({$sort: ordenar});
+            pipeline.push({ $sort: ordenar });
         }
 
         const reactivaciones = await this.reactivacionModel.aggregate(pipeline);
@@ -643,10 +677,10 @@ export class ExamenesService {
         // Se verifica si no hay un examen activo para esta persona
         const examenExiste = await this.examenModel.findOne({ persona, activo: true });
 
-        if(examenExiste) throw new NotFoundException('Ya existe un examen habilitado para esta persona');
+        if (examenExiste) throw new NotFoundException('Ya existe un examen habilitado para esta persona');
 
         // Actualizacion de datos de examen
-        const examen = await this.examenModel.findByIdAndUpdate(id, examenUpdateDTO, {new: true});
+        const examen = await this.examenModel.findByIdAndUpdate(id, examenUpdateDTO, { new: true });
 
         // Se crea documento en tabla de reactivacion de examenes
         const reactivacion = new this.reactivacionModel({
@@ -667,11 +701,11 @@ export class ExamenesService {
         const examenDB = await this.getExamen(id, '');
 
         // Se calcula el resultado del examen
-         var cantidad_correctas = 0;
-         var cantidad_incorrectas = 0;
+        var cantidad_correctas = 0;
+        var cantidad_incorrectas = 0;
 
-         // Se recorren las preguntas
-         examenUpdateDTO.preguntas.map( async pregunta => {
+        // Se recorren las preguntas
+        examenUpdateDTO.preguntas.map(async pregunta => {
 
             const correcta = pregunta.seleccionada === 'respuesta_correcta';
 
@@ -688,15 +722,21 @@ export class ExamenesService {
 
         });
 
-         if((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45) examenUpdateDTO.aprobado = true; // (45/50 == 90%)
-         if((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
-         if(examenDB.tipo_licencoa === 'G' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
-         if(examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16) examenUpdateDTO.aprobado = true; // (16/17 == 90%)
+        if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45) examenUpdateDTO.aprobado = true; // (45/50 == 90%)
+        if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
+        if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
+        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
+        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16) examenUpdateDTO.aprobado = true; // (16/17 == 90%) // H -> D4
 
-         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
-         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
+        examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
+        examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
 
-         return examenUpdateDTO;
+        // Desaprobado por pregunta de caracter eliminatoria
+        examenUpdateDTO.preguntas.map( pregunta => {
+            if(!pregunta.seleccion_correcta && pregunta.eliminatoria) examenUpdateDTO.aprobado = false;
+        })
+
+        return examenUpdateDTO;
 
     }
 
@@ -725,7 +765,7 @@ export class ExamenesService {
         let preguntas: any[] = [];
 
         examen.preguntas.map(pregunta => {
-            if(pregunta.url_img !== '') pregunta.url_img = this.url_imagenes + pregunta.url_img;
+            if (pregunta.url_img !== '') pregunta.url_img = this.url_imagenes + pregunta.url_img;
             preguntas.push(pregunta);
         })
 
@@ -736,7 +776,7 @@ export class ExamenesService {
                 url_logo: this.url_logo,
                 examen,
                 preguntas,
-                fecha: format(new Date(examen.createdAt),'dd/MM/yyyy'),
+                fecha: format(new Date(examen.createdAt), 'dd/MM/yyyy'),
                 totalPreguntas: preguntas.length
             },
             path: this.url_destino_pdf_examen,
@@ -754,7 +794,7 @@ export class ExamenesService {
         // Se verifica que el examen este activo antes de eliminarlo
         const examenBD = await this.examenModel.findById(id);
 
-        if(!examenBD.activo) throw new NotFoundException('El examen ya fue presentado, no puedes eliminarlo');
+        if (!examenBD.activo) throw new NotFoundException('El examen ya fue presentado, no puedes eliminarlo');
 
         // Se genera el examen y se almacena en la Base de datosw
         const examen = await this.examenModel.findByIdAndRemove(id);

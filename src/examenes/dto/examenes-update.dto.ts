@@ -16,6 +16,7 @@ export class ExamenUpdateDTO {
         imagen: string,
         pregunta_img: boolean,
         url_img: string,
+        eliminatoria: boolean,
         respuesta_correcta: string,
         respuesta_incorrecta_1: string,
         respuesta_incorrecta_2: string,
