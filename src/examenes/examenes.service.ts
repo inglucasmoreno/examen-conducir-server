@@ -725,7 +725,7 @@ export class ExamenesService {
         if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45) examenUpdateDTO.aprobado = true; // (45/50 == 90%)
         if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
         if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
-        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
+        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%) // J -> E2
         if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16) examenUpdateDTO.aprobado = true; // (16/17 == 90%) // H -> D4
 
         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
