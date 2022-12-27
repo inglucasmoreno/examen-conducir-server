@@ -11,6 +11,8 @@ export class PersonaDTO {
     @IsString()
     readonly dni: string;
 
+    readonly sigem: boolean;
+
     @IsString()
     readonly userCreator: string;
 

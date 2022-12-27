@@ -27,6 +27,7 @@ const socket_module_1 = require("./socket/socket.module");
 const config_1 = require("@nestjs/config");
 const estadisticas_module_1 = require("./estadisticas/estadisticas.module");
 const formulario_practica_module_1 = require("./formulario-practica/formulario-practica.module");
+const sigem_module_1 = require("./sigem/sigem.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -54,6 +55,7 @@ AppModule = __decorate([
             socket_module_1.SocketModule,
             estadisticas_module_1.EstadisticasModule,
             formulario_practica_module_1.FormularioPracticaModule,
+            sigem_module_1.SigemModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService]

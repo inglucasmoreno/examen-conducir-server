@@ -31,6 +31,7 @@
         "@nestjs/platform-socket.io": "^8.2.4",
         "@nestjs/serve-static": "^2.2.2",
         "@nestjs/websockets": "^8.2.4",
+        "axios": "^1.2.1",
         "bcryptjs": "^2.4.3",
         "class-transformer": "^0.4.0",
         "class-validator": "^0.13.1",

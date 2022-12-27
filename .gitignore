@@ -1,6 +1,9 @@
 # compiled output
 /node_modules
 
+# Variables de entorno
+.env
+
 # Carpeta public
 /public/img
 

@@ -2,7 +2,8 @@ export declare class PersonaUpdateDTO {
     readonly apellido: string;
     readonly nombre: string;
     readonly dni: string;
-    readonly userUpdator: string;
+    readonly sigem: string;
     readonly userCreator: string;
+    readonly userUpdator: string;
     readonly activo: boolean;
 }

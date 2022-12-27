@@ -22,6 +22,11 @@ export const personaSchema = new Schema({
         unique: true,
         trim: true
     },
+    
+    sigem: {
+        type: Boolean,
+        default: false
+    },
 
     userCreator: {
         type: Schema.Types.ObjectId,

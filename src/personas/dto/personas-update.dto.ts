@@ -1,4 +1,3 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsString, isString } from "class-validator";
 
 export class PersonaUpdateDTO {
     
@@ -8,9 +7,11 @@ export class PersonaUpdateDTO {
    
     readonly dni: string;
 
-    readonly userUpdator: string;
+    readonly sigem: string;
 
     readonly userCreator: string;
-    
+
+    readonly userUpdator: string;
+
     readonly activo: boolean;
 }

@@ -94,6 +94,7 @@ let PersonasService = class PersonasService {
     }
     async crearPersona(personaDTO) {
         const { dni } = personaDTO;
+        console.log(personaDTO);
         let personaDB = await this.getPersonaDNI(dni);
         if (personaDB)
             throw new common_1.NotFoundException('El DNI ya esta registrado');

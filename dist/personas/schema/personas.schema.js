@@ -21,6 +21,10 @@ exports.personaSchema = new mongoose_1.Schema({
         unique: true,
         trim: true
     },
+    sigem: {
+        type: Boolean,
+        default: false
+    },
     userCreator: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'usuario',
