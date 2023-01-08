@@ -129,8 +129,6 @@ export class PersonasService {
 
         const { dni } = personaDTO;
 
-        console.log(personaDTO);
-
         // Se verifica si el DNI esta registrado
         let personaDB = await this.getPersonaDNI(dni);
         if (personaDB) throw new NotFoundException('El DNI ya esta registrado');
