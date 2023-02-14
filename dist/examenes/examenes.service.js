@@ -166,9 +166,15 @@ let ExamenesService = class ExamenesService {
     }
     async listarExamenesHistorial(querys, data) {
         const { columna, direccion, desde, registerpp, } = querys;
-        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string } = data;
+        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string, aprobado } = data;
         const pipeline = [];
         const pipelineTotal = [];
+        let filtroAprobado = {};
+        if (aprobado && aprobado !== '') {
+            filtroAprobado = { aprobado: aprobado === 'true' ? true : false };
+            pipeline.push({ $match: filtroAprobado });
+            pipelineTotal.push({ $match: filtroAprobado });
+        }
         if ((fechaDesde === null || fechaDesde === void 0 ? void 0 : fechaDesde.trim()) !== '') {
             pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
             pipelineTotal.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });

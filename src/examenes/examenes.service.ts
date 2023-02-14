@@ -249,10 +249,18 @@ export class ExamenesService {
         } = querys;
 
         // Body - Datos de busqueda
-        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string } = data;
+        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string, aprobado } = data;
 
         const pipeline = [];
-        const pipelineTotal = [];
+        const pipelineTotal = [];   
+
+        // Activo / Inactivo
+        let filtroAprobado = {};
+        if (aprobado && aprobado !== '') {
+            filtroAprobado = { aprobado: aprobado === 'true' ? true : false };
+            pipeline.push({ $match: filtroAprobado });
+            pipelineTotal.push({ $match: filtroAprobado });
+        }
 
         // Filtro - Intervalo de fechas
         if (fechaDesde?.trim() !== '') {
@@ -265,7 +273,6 @@ export class ExamenesService {
             pipelineTotal.push({ $match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } } });
         }
 
-
         // Filtro - Lugar de creacion
         if (lugar.trim() !== '') {
             let idLugar: any = '';
@@ -274,19 +281,17 @@ export class ExamenesService {
             pipelineTotal.push({ $match: { lugar: idLugar } });
         }
 
-        // Filtro - Estado de examen
+        // Filtro - Nro de examen
         if (nro_examen_string && nro_examen_string !== '') {
             pipeline.push({ $match: { nro_examen_string } });
             pipelineTotal.push({ $match: { nro_examen_string } });
         }
-
 
         // Filtro - Estado de examen
         if (estado && estado !== '') {
             pipeline.push({ $match: { estado } });
             pipelineTotal.push({ $match: { estado } });
         }
-
 
         // Filtro - Tipo de licencia
         if (clase && clase !== '') {
