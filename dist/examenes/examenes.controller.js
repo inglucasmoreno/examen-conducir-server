@@ -50,10 +50,11 @@ let ExamenesController = class ExamenesController {
         });
     }
     async listarExamenesHistorial(res, querys, data) {
-        const examenes = await this.examenesService.listarExamenesHistorial(querys, data);
+        const { examenes, totalItems } = await this.examenesService.listarExamenesHistorial(querys, data);
         res.status(common_1.HttpStatus.OK).json({
             message: 'Listado de examenes para historial correcto',
-            examenes
+            examenes,
+            totalItems
         });
     }
     async listarExamenes(res, querys) {

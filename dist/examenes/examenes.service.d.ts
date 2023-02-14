@@ -18,7 +18,7 @@ export declare class ExamenesService {
     getExamenDni(dni: string): Promise<any>;
     getExamenPersona(persona: string): Promise<any>;
     limpiarExamenes(): Promise<IExamen[]>;
-    listarExamenesHistorial(querys: any, data: any): Promise<IExamen[]>;
+    listarExamenesHistorial(querys: any, data: any): Promise<any>;
     listarExamenes(querys: any): Promise<IExamen[]>;
     crearExamen(examenDTO: ExamenDTO): Promise<string>;
     actualizarExamen(id: string, examenUpdateDTO: any): Promise<IExamen>;

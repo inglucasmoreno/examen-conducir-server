@@ -165,24 +165,36 @@ let ExamenesService = class ExamenesService {
         return examenes;
     }
     async listarExamenesHistorial(querys, data) {
-        const { columna, direccion } = querys;
+        const { columna, direccion, desde, registerpp, } = querys;
         const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string } = data;
         const pipeline = [];
-        if ((fechaDesde === null || fechaDesde === void 0 ? void 0 : fechaDesde.trim()) !== '')
+        const pipelineTotal = [];
+        if ((fechaDesde === null || fechaDesde === void 0 ? void 0 : fechaDesde.trim()) !== '') {
             pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
-        if ((fechaHasta === null || fechaHasta === void 0 ? void 0 : fechaHasta.trim()) !== '')
+            pipelineTotal.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+        }
+        if ((fechaHasta === null || fechaHasta === void 0 ? void 0 : fechaHasta.trim()) !== '') {
             pipeline.push({ $match: { createdAt: { $lte: new Date((0, date_fns_1.add)(new Date(fechaHasta), { days: 1 })) } } });
+            pipelineTotal.push({ $match: { createdAt: { $lte: new Date((0, date_fns_1.add)(new Date(fechaHasta), { days: 1 })) } } });
+        }
         if (lugar.trim() !== '') {
             let idLugar = '';
             idLugar = new mongoose.Types.ObjectId(lugar);
             pipeline.push({ $match: { lugar: idLugar } });
+            pipelineTotal.push({ $match: { lugar: idLugar } });
         }
-        if (nro_examen_string && nro_examen_string !== '')
+        if (nro_examen_string && nro_examen_string !== '') {
             pipeline.push({ $match: { nro_examen_string } });
-        if (estado && estado !== '')
+            pipelineTotal.push({ $match: { nro_examen_string } });
+        }
+        if (estado && estado !== '') {
             pipeline.push({ $match: { estado } });
-        if (clase && clase !== '')
+            pipelineTotal.push({ $match: { estado } });
+        }
+        if (clase && clase !== '') {
             pipeline.push({ $match: { tipo_licencia: clase } });
+            pipelineTotal.push({ $match: { tipo_licencia: clase } });
+        }
         pipeline.push({
             $lookup: {
                 from: 'lugares',
@@ -201,6 +213,15 @@ let ExamenesService = class ExamenesService {
             }
         });
         pipeline.push({ $unwind: '$persona' });
+        pipelineTotal.push({
+            $lookup: {
+                from: 'personas',
+                localField: 'persona',
+                foreignField: '_id',
+                as: 'persona'
+            }
+        });
+        pipelineTotal.push({ $unwind: '$persona' });
         pipeline.push({
             $lookup: {
                 from: 'usuarios',
@@ -210,17 +231,37 @@ let ExamenesService = class ExamenesService {
             }
         });
         pipeline.push({ $unwind: '$usuario' });
-        if (usuario && usuario.trim() !== '')
+        pipelineTotal.push({
+            $lookup: {
+                from: 'usuarios',
+                localField: 'usuario',
+                foreignField: '_id',
+                as: 'usuario'
+            }
+        });
+        pipelineTotal.push({ $unwind: '$usuario' });
+        if (usuario && usuario.trim() !== '') {
             pipeline.push({ $match: { 'usuario.dni': usuario } });
-        if (persona && persona.trim() !== '')
+            pipelineTotal.push({ $match: { 'usuario.dni': usuario } });
+        }
+        if (persona && persona.trim() !== '') {
             pipeline.push({ $match: { 'persona.dni': persona } });
+            pipelineTotal.push({ $match: { 'persona.dni': persona } });
+        }
         const ordenar = {};
         if (columna) {
             ordenar[String(columna)] = Number(direccion);
             pipeline.push({ $sort: ordenar });
         }
-        const examenes = await this.examenModel.aggregate(pipeline);
-        return examenes;
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
+        const [examenes, examenesTotal] = await Promise.all([
+            this.examenModel.aggregate(pipeline),
+            this.examenModel.aggregate(pipelineTotal)
+        ]);
+        return {
+            examenes,
+            totalItems: examenesTotal.length
+        };
     }
     async listarExamenes(querys) {
         const { columna, direccion, lugar } = querys;

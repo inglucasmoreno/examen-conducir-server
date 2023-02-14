@@ -238,35 +238,61 @@ export class ExamenesService {
     }
 
     // Listar examenes historial
-    async listarExamenesHistorial(querys: any, data: any): Promise<IExamen[]> {
+    async listarExamenesHistorial(querys: any, data: any): Promise<any> {
 
         // Parametros - Ordenamiento
-        const { columna, direccion } = querys;
+        const {
+            columna,
+            direccion,
+            desde,
+            registerpp,
+        } = querys;
 
         // Body - Datos de busqueda
         const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string } = data;
 
         const pipeline = [];
+        const pipelineTotal = [];
 
         // Filtro - Intervalo de fechas
-        if (fechaDesde?.trim() !== '') pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
-        if (fechaHasta?.trim() !== '') pipeline.push({ $match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } } });
+        if (fechaDesde?.trim() !== '') {
+            pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+            pipelineTotal.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+        }
+
+        if (fechaHasta?.trim() !== '') {
+            pipeline.push({ $match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } } });
+            pipelineTotal.push({ $match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } } });
+        }
+
 
         // Filtro - Lugar de creacion
         if (lugar.trim() !== '') {
             let idLugar: any = '';
             idLugar = new mongoose.Types.ObjectId(lugar);
             pipeline.push({ $match: { lugar: idLugar } });
+            pipelineTotal.push({ $match: { lugar: idLugar } });
         }
 
         // Filtro - Estado de examen
-        if (nro_examen_string && nro_examen_string !== '') pipeline.push({ $match: { nro_examen_string } });
+        if (nro_examen_string && nro_examen_string !== '') {
+            pipeline.push({ $match: { nro_examen_string } });
+            pipelineTotal.push({ $match: { nro_examen_string } });
+        }
+
 
         // Filtro - Estado de examen
-        if (estado && estado !== '') pipeline.push({ $match: { estado } });
+        if (estado && estado !== '') {
+            pipeline.push({ $match: { estado } });
+            pipelineTotal.push({ $match: { estado } });
+        }
+
 
         // Filtro - Tipo de licencia
-        if (clase && clase !== '') pipeline.push({ $match: { tipo_licencia: clase } });
+        if (clase && clase !== '') {
+            pipeline.push({ $match: { tipo_licencia: clase } });
+            pipelineTotal.push({ $match: { tipo_licencia: clase } });
+        }
 
         // Join (lugar)
         pipeline.push(
@@ -294,6 +320,19 @@ export class ExamenesService {
         );
         pipeline.push({ $unwind: '$persona' });
 
+        // Join (personas)
+        pipelineTotal.push(
+            {
+                $lookup: { // Lookup - personas
+                    from: 'personas',
+                    localField: 'persona',
+                    foreignField: '_id',
+                    as: 'persona'
+                }
+            },
+        );
+        pipelineTotal.push({ $unwind: '$persona' });
+
         pipeline.push(
             // Join (usuarios)
             {
@@ -307,11 +346,30 @@ export class ExamenesService {
         );
         pipeline.push({ $unwind: '$usuario' });
 
+        pipelineTotal.push(
+            // Join (usuarios)
+            {
+                $lookup: { // Lookup - usuarios
+                    from: 'usuarios',
+                    localField: 'usuario',
+                    foreignField: '_id',
+                    as: 'usuario'
+                }
+            },
+        );
+        pipelineTotal.push({ $unwind: '$usuario' });
+
         // Filtro - Usuarios (DNI)
-        if (usuario && usuario.trim() !== '') pipeline.push({ $match: { 'usuario.dni': usuario } });
+        if (usuario && usuario.trim() !== '') {
+            pipeline.push({ $match: { 'usuario.dni': usuario } });
+            pipelineTotal.push({ $match: { 'usuario.dni': usuario } });
+        }
 
         // Filtro - Destino de examen (DNI)
-        if (persona && persona.trim() !== '') pipeline.push({ $match: { 'persona.dni': persona } });
+        if (persona && persona.trim() !== '') {
+            pipeline.push({ $match: { 'persona.dni': persona } });
+            pipelineTotal.push({ $match: { 'persona.dni': persona } });
+        }
 
         // Ordenando datos
         const ordenar: any = {};
@@ -320,9 +378,18 @@ export class ExamenesService {
             pipeline.push({ $sort: ordenar });
         }
 
-        const examenes = await this.examenModel.aggregate(pipeline);
+        // Paginacion
+        pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
 
-        return examenes;
+        const [examenes, examenesTotal] = await Promise.all([
+            this.examenModel.aggregate(pipeline),
+            this.examenModel.aggregate(pipelineTotal)
+        ]);
+
+        return {
+            examenes,
+            totalItems: examenesTotal.length
+        };
 
     }
 
@@ -732,8 +799,8 @@ export class ExamenesService {
         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
 
         // Desaprobado por pregunta de caracter eliminatoria
-        examenUpdateDTO.preguntas.map( pregunta => {
-            if(!pregunta.seleccion_correcta && pregunta.eliminatoria) examenUpdateDTO.aprobado = false;
+        examenUpdateDTO.preguntas.map(pregunta => {
+            if (!pregunta.seleccion_correcta && pregunta.eliminatoria) examenUpdateDTO.aprobado = false;
         })
 
         return examenUpdateDTO;

@@ -52,10 +52,11 @@ export class ExamenesController {
     @UseGuards(JwtAuthGuard)
     @Post('/historial/listado')
     async listarExamenesHistorial(@Res() res, @Query() querys, @Body() data) {
-        const examenes = await this.examenesService.listarExamenesHistorial(querys, data);
+        const {examenes, totalItems} = await this.examenesService.listarExamenesHistorial(querys, data);
         res.status(HttpStatus.OK).json({
             message: 'Listado de examenes para historial correcto',
-            examenes
+            examenes,
+            totalItems
         });            
     }  
 
