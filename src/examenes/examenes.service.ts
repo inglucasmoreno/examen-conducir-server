@@ -246,13 +246,25 @@ export class ExamenesService {
             direccion,
             desde,
             registerpp,
+            reactivados,
+            bajaTiempo
         } = querys;
 
         // Body - Datos de busqueda
-        const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string, aprobado } = data;
+        const {
+            fechaDesde,
+            fechaHasta,
+            lugar,
+            estado,
+            clase,
+            usuario,
+            persona,
+            nro_examen_string,
+            aprobado
+        } = data;
 
         const pipeline = [];
-        const pipelineTotal = [];   
+        const pipelineTotal = [];
 
         // Activo / Inactivo
         let filtroAprobado = {};
@@ -260,6 +272,22 @@ export class ExamenesService {
             filtroAprobado = { aprobado: aprobado === 'true' ? true : false };
             pipeline.push({ $match: filtroAprobado });
             pipelineTotal.push({ $match: filtroAprobado });
+        }
+
+        // Reactivados
+        let filtroReactivados = {};
+        if (reactivados && reactivados !== '') {
+            filtroReactivados = { reactivado: reactivados === 'true' ? true : false };
+            pipeline.push({ $match: filtroReactivados });
+            pipelineTotal.push({ $match: filtroReactivados });
+        }
+
+        // Baja tiempo
+        let filtroBajaTiempo = {};
+        if (bajaTiempo && bajaTiempo !== '') {
+            filtroBajaTiempo = { baja_tiempo: bajaTiempo === 'true' ? true : false };
+            pipeline.push({ $match: filtroBajaTiempo });
+            pipelineTotal.push({ $match: filtroBajaTiempo });
         }
 
         // Filtro - Intervalo de fechas
@@ -871,6 +899,48 @@ export class ExamenesService {
         // Se genera el examen y se almacena en la Base de datosw
         const examen = await this.examenModel.findByIdAndRemove(id);
         return examen;
+    }
+
+
+    // Estadisticas de examenes
+    async estadisticasExamenes(querys: any): Promise<any> {
+
+        const {
+            fechaDesde,
+            fechaHasta,
+        } = querys;
+
+        const pipeline = [];
+        pipeline.push({$match: { estado: 'Finalizado' }});
+
+        // Filtro - Intervalo de fechas
+        if (fechaDesde?.trim() !== '') {
+            pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+        }
+
+        if (fechaHasta?.trim() !== '') {
+            pipeline.push({ $match: { createdAt: { $lte: new Date(add(new Date(fechaHasta), { days: 1 })) } } });
+        }
+
+        pipeline.push({
+            $group: {
+                _id: null,
+                total_examenes: { $sum: 1 },
+                examenes_aprobados: { $sum: { $cond: [{ $eq: ["$aprobado", true] }, 1, 0] } },
+                examenes_desaprobados: { $sum: { $cond: [{ $eq: ["$aprobado", false] }, 1, 0] } },
+            }
+        })
+
+        const estadisticas = await this.examenModel.aggregate(pipeline);
+
+        console.log(estadisticas);
+
+        return {
+            total_examenes: estadisticas.length !== 0 ? estadisticas[0].total_examenes : 0,
+            examenes_aprobados: estadisticas.length !== 0 ? estadisticas[0].examenes_aprobados : 0,
+            examenes_desaprobados: estadisticas.length !== 0 ? estadisticas[0].examenes_desaprobados: 0,
+        };
+
     }
 
 }

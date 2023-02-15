@@ -27,4 +27,5 @@ export declare class ExamenesService {
     finalizarExamen(id: string, examenUpdateDTO: any): Promise<IExamen>;
     imprimirExamen(examen: any): Promise<void>;
     eliminarExamen(id: string): Promise<IExamen>;
+    estadisticasExamenes(querys: any): Promise<any>;
 }

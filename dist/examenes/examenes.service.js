@@ -165,7 +165,7 @@ let ExamenesService = class ExamenesService {
         return examenes;
     }
     async listarExamenesHistorial(querys, data) {
-        const { columna, direccion, desde, registerpp, } = querys;
+        const { columna, direccion, desde, registerpp, reactivados, bajaTiempo } = querys;
         const { fechaDesde, fechaHasta, lugar, estado, clase, usuario, persona, nro_examen_string, aprobado } = data;
         const pipeline = [];
         const pipelineTotal = [];
@@ -174,6 +174,18 @@ let ExamenesService = class ExamenesService {
             filtroAprobado = { aprobado: aprobado === 'true' ? true : false };
             pipeline.push({ $match: filtroAprobado });
             pipelineTotal.push({ $match: filtroAprobado });
+        }
+        let filtroReactivados = {};
+        if (reactivados && reactivados !== '') {
+            filtroReactivados = { reactivado: reactivados === 'true' ? true : false };
+            pipeline.push({ $match: filtroReactivados });
+            pipelineTotal.push({ $match: filtroReactivados });
+        }
+        let filtroBajaTiempo = {};
+        if (bajaTiempo && bajaTiempo !== '') {
+            filtroBajaTiempo = { baja_tiempo: bajaTiempo === 'true' ? true : false };
+            pipeline.push({ $match: filtroBajaTiempo });
+            pipelineTotal.push({ $match: filtroBajaTiempo });
         }
         if ((fechaDesde === null || fechaDesde === void 0 ? void 0 : fechaDesde.trim()) !== '') {
             pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
@@ -568,6 +580,32 @@ let ExamenesService = class ExamenesService {
             throw new common_1.NotFoundException('El examen ya fue presentado, no puedes eliminarlo');
         const examen = await this.examenModel.findByIdAndRemove(id);
         return examen;
+    }
+    async estadisticasExamenes(querys) {
+        const { fechaDesde, fechaHasta, } = querys;
+        const pipeline = [];
+        pipeline.push({ $match: { estado: 'Finalizado' } });
+        if ((fechaDesde === null || fechaDesde === void 0 ? void 0 : fechaDesde.trim()) !== '') {
+            pipeline.push({ $match: { createdAt: { $gte: new Date(fechaDesde) } } });
+        }
+        if ((fechaHasta === null || fechaHasta === void 0 ? void 0 : fechaHasta.trim()) !== '') {
+            pipeline.push({ $match: { createdAt: { $lte: new Date((0, date_fns_1.add)(new Date(fechaHasta), { days: 1 })) } } });
+        }
+        pipeline.push({
+            $group: {
+                _id: null,
+                total_examenes: { $sum: 1 },
+                examenes_aprobados: { $sum: { $cond: [{ $eq: ["$aprobado", true] }, 1, 0] } },
+                examenes_desaprobados: { $sum: { $cond: [{ $eq: ["$aprobado", false] }, 1, 0] } },
+            }
+        });
+        const estadisticas = await this.examenModel.aggregate(pipeline);
+        console.log(estadisticas);
+        return {
+            total_examenes: estadisticas.length !== 0 ? estadisticas[0].total_examenes : 0,
+            examenes_aprobados: estadisticas.length !== 0 ? estadisticas[0].examenes_aprobados : 0,
+            examenes_desaprobados: estadisticas.length !== 0 ? estadisticas[0].examenes_desaprobados : 0,
+        };
     }
 };
 ExamenesService = __decorate([

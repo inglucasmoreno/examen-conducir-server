@@ -43,20 +43,6 @@ let ExamenesController = class ExamenesController {
             examen
         });
     }
-    async imprimirExamen(res, data) {
-        await this.examenesService.imprimirExamen(data);
-        res.status(common_1.HttpStatus.OK).json({
-            message: 'Examen generado correctamente',
-        });
-    }
-    async listarExamenesHistorial(res, querys, data) {
-        const { examenes, totalItems } = await this.examenesService.listarExamenesHistorial(querys, data);
-        res.status(common_1.HttpStatus.OK).json({
-            message: 'Listado de examenes para historial correcto',
-            examenes,
-            totalItems
-        });
-    }
     async listarExamenes(res, querys) {
         const examenes = await this.examenesService.listarExamenes(querys);
         res.status(common_1.HttpStatus.OK).json({
@@ -69,6 +55,35 @@ let ExamenesController = class ExamenesController {
         res.status(common_1.HttpStatus.OK).json({
             message: 'Limpieza de examenes correcta',
             examenes
+        });
+    }
+    async listarReactivaciones(res, querys, examenID) {
+        const reactivaciones = await this.examenesService.listarReactivaciones(examenID, querys);
+        res.status(common_1.HttpStatus.OK).json({
+            message: 'Listado de reactivaciones correcta',
+            reactivaciones
+        });
+    }
+    async estadisticasExamenes(res, querys) {
+        const estadisticas = await this.examenesService.estadisticasExamenes(querys);
+        res.status(common_1.HttpStatus.OK).json({
+            message: 'Listado de estadisticas correcto',
+            estadisticas
+        });
+    }
+    async imprimirExamen(res, data) {
+        await this.examenesService.imprimirExamen(data);
+        res.status(common_1.HttpStatus.OK).json({
+            message: 'Examen generado correctamente',
+        });
+    }
+    async listarExamenesHistorial(res, querys, data) {
+        console.log(data);
+        const { examenes, totalItems } = await this.examenesService.listarExamenesHistorial(querys, data);
+        res.status(common_1.HttpStatus.OK).json({
+            message: 'Listado de examenes para historial correcto',
+            examenes,
+            totalItems
         });
     }
     async crearExamen(res, examenDTO) {
@@ -100,13 +115,6 @@ let ExamenesController = class ExamenesController {
         res.status(common_1.HttpStatus.OK).json({
             message: 'Examen actualizado correctamente',
             examen
-        });
-    }
-    async listarReactivaciones(res, querys, examenID) {
-        const reactivaciones = await this.examenesService.listarReactivaciones(examenID, querys);
-        res.status(common_1.HttpStatus.OK).json({
-            message: 'Listado de reactivaciones correcta',
-            reactivaciones
         });
     }
     async reactivarExamen(res, examenUpdateDTO, examenID) {
@@ -150,6 +158,42 @@ __decorate([
 ], ExamenesController.prototype, "getExamenPersona", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ExamenesController.prototype, "listarExamenes", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/limpiar/antiguos'),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ExamenesController.prototype, "limpiarExamenes", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/reactivar/:id'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Query)()),
+    __param(2, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], ExamenesController.prototype, "listarReactivaciones", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/estadisticas/listado/general'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ExamenesController.prototype, "estadisticasExamenes", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/imprimir'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
@@ -169,23 +213,6 @@ __decorate([
 ], ExamenesController.prototype, "listarExamenesHistorial", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('/'),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Query)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], ExamenesController.prototype, "listarExamenes", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('/limpiar/antiguos'),
-    __param(0, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], ExamenesController.prototype, "limpiarExamenes", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
@@ -202,16 +229,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], ExamenesController.prototype, "actualizarExamen", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('/reactivar/:id'),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Query)()),
-    __param(2, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
-    __metadata("design:returntype", Promise)
-], ExamenesController.prototype, "listarReactivaciones", null);
 __decorate([
     (0, common_1.Put)('/reactivar/:id'),
     __param(0, (0, common_1.Res)()),

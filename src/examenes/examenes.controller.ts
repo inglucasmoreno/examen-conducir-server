@@ -6,8 +6,8 @@ import { add } from 'date-fns';
 @Controller('examenes')
 export class ExamenesController {
 
-    constructor(private examenesService: ExamenesService){}
-    
+    constructor(private examenesService: ExamenesService) { }
+
     // Examen por ID
     @Get('/:id')
     async getExamen(@Res() res, @Param('id') examenID, @Query('activo') activo) {
@@ -15,7 +15,7 @@ export class ExamenesController {
         res.status(HttpStatus.OK).json({
             message: 'Examen obtenido correctamente',
             examen
-        });        
+        });
     }
 
     // Examen por DNI
@@ -25,7 +25,7 @@ export class ExamenesController {
         res.status(HttpStatus.OK).json({
             message: 'Examen obtenido correctamente',
             examen
-        });        
+        });
     }
 
     // Examen por Persona
@@ -35,30 +35,8 @@ export class ExamenesController {
         res.status(HttpStatus.OK).json({
             message: 'Examen obtenido correctamente',
             examen
-        });        
+        });
     }
-
-    // Imprimir examen
-    @UseGuards(JwtAuthGuard)
-    @Post('/imprimir')
-    async imprimirExamen(@Res() res, @Body() data: any) {
-        await this.examenesService.imprimirExamen(data);
-        res.status(HttpStatus.OK).json({
-            message: 'Examen generado correctamente',
-        });            
-    }
-    
-    // Listar examenes - Historial
-    @UseGuards(JwtAuthGuard)
-    @Post('/historial/listado')
-    async listarExamenesHistorial(@Res() res, @Query() querys, @Body() data) {
-        const {examenes, totalItems} = await this.examenesService.listarExamenesHistorial(querys, data);
-        res.status(HttpStatus.OK).json({
-            message: 'Listado de examenes para historial correcto',
-            examenes,
-            totalItems
-        });            
-    }  
 
     // Listar examenes - Hoy
     @UseGuards(JwtAuthGuard)
@@ -68,73 +46,18 @@ export class ExamenesController {
         res.status(HttpStatus.OK).json({
             message: 'Listado de examenes correcto',
             examenes
-        });            
+        });
     }
 
     // Limpiar examenes antiguos
     @UseGuards(JwtAuthGuard)
     @Get('/limpiar/antiguos')
-    async limpiarExamenes(@Res() res){ 
+    async limpiarExamenes(@Res() res) {
         const examenes = await this.examenesService.limpiarExamenes();
         res.status(HttpStatus.OK).json({
             message: 'Limpieza de examenes correcta',
             examenes
-        });            
-    } 
-
-    // Crear examen
-    @UseGuards(JwtAuthGuard)
-    @Post('/')
-    async crearExamen(@Res() res, @Body() examenDTO: ExamenDTO ) {
-        
-        // Se verifica si ya hay un examen creado para esa persona
-        const examenDB = await this.examenesService.getExamenPersona(examenDTO.persona);
-        if(examenDB) throw new NotFoundException('Ya existe un examen creado para esta persona');
-        
-        // Se crea el examen
-        const examen = await this.examenesService.crearExamen(examenDTO);  
-
-        res.status(HttpStatus.OK).json({
-            message: 'Examen creado correctamente',
-            examen
-        });      
-        
-    }
-
-    // Actualizar examen
-    @Put('/:id')
-    async actualizarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID ) {
-     
-        const { estado, tiempo, activo } = examenUpdateDTO;
-
-        // Examen a estado -> "Rindiendo" | Se agrega fecha de inicio y finalizacion del examen
-        if(estado === 'Rindiendo'){
-            
-            const fechaActual = new Date();
-            
-            const fechaFinalizacion = add(fechaActual, { minutes: Number(tiempo) });
-
-            examenUpdateDTO.fecha_rindiendo = fechaActual;
-            examenUpdateDTO.fecha_finalizacion = fechaFinalizacion;
-
-        } 
-        
-        let examen;
-
-        // Finalizar examen?
-        if(activo === false){ 
-            const data = await this.examenesService.finalizarExamen(examenID, examenUpdateDTO);
-            examen = await this.examenesService.actualizarExamen(examenID, data); 
-        }else{
-            examen = await this.examenesService.actualizarExamen(examenID, examenUpdateDTO); 
-        }   
-                
-        res.status(HttpStatus.OK).json({
-            message: 'Examen actualizado correctamente',
-            examen
-        });      
-    
-    
+        });
     }
 
     // Listar reactivaciones
@@ -145,20 +68,109 @@ export class ExamenesController {
         res.status(HttpStatus.OK).json({
             message: 'Listado de reactivaciones correcta',
             reactivaciones
-        });            
+        });
+    }
+
+    // Estadisticas de examenes
+    @UseGuards(JwtAuthGuard)
+    @Get('/estadisticas/listado/general')
+    async estadisticasExamenes(@Res() res, @Query() querys) {
+        const estadisticas = await this.examenesService.estadisticasExamenes(querys);
+        res.status(HttpStatus.OK).json({
+            message: 'Listado de estadisticas correcto',
+            estadisticas
+        });
+    }
+
+    // Imprimir examen
+    @UseGuards(JwtAuthGuard)
+    @Post('/imprimir')
+    async imprimirExamen(@Res() res, @Body() data: any) {
+        await this.examenesService.imprimirExamen(data);
+        res.status(HttpStatus.OK).json({
+            message: 'Examen generado correctamente',
+        });
+    }
+
+    // Listar examenes - Historial
+    @UseGuards(JwtAuthGuard)
+    @Post('/historial/listado')
+    async listarExamenesHistorial(@Res() res, @Query() querys, @Body() data) {
+        console.log(data);
+        const { examenes, totalItems } = await this.examenesService.listarExamenesHistorial(querys, data);
+        res.status(HttpStatus.OK).json({
+            message: 'Listado de examenes para historial correcto',
+            examenes,
+            totalItems
+        });
+    }
+
+    // Crear examen
+    @UseGuards(JwtAuthGuard)
+    @Post('/')
+    async crearExamen(@Res() res, @Body() examenDTO: ExamenDTO) {
+
+        // Se verifica si ya hay un examen creado para esa persona
+        const examenDB = await this.examenesService.getExamenPersona(examenDTO.persona);
+        if (examenDB) throw new NotFoundException('Ya existe un examen creado para esta persona');
+
+        // Se crea el examen
+        const examen = await this.examenesService.crearExamen(examenDTO);
+
+        res.status(HttpStatus.OK).json({
+            message: 'Examen creado correctamente',
+            examen
+        });
+
+    }
+
+    // Actualizar examen
+    @Put('/:id')
+    async actualizarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID) {
+
+        const { estado, tiempo, activo } = examenUpdateDTO;
+
+        // Examen a estado -> "Rindiendo" | Se agrega fecha de inicio y finalizacion del examen
+        if (estado === 'Rindiendo') {
+
+            const fechaActual = new Date();
+
+            const fechaFinalizacion = add(fechaActual, { minutes: Number(tiempo) });
+
+            examenUpdateDTO.fecha_rindiendo = fechaActual;
+            examenUpdateDTO.fecha_finalizacion = fechaFinalizacion;
+
+        }
+
+        let examen;
+
+        // Finalizar examen?
+        if (activo === false) {
+            const data = await this.examenesService.finalizarExamen(examenID, examenUpdateDTO);
+            examen = await this.examenesService.actualizarExamen(examenID, data);
+        } else {
+            examen = await this.examenesService.actualizarExamen(examenID, examenUpdateDTO);
+        }
+
+        res.status(HttpStatus.OK).json({
+            message: 'Examen actualizado correctamente',
+            examen
+        });
+
+
     }
 
     // Reactivar examen
     @Put('/reactivar/:id')
-    async reactivarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID ) {
-        
+    async reactivarExamen(@Res() res, @Body() examenUpdateDTO: any, @Param('id') examenID) {
+
         const examen = await this.examenesService.reactivarExamen(examenID, examenUpdateDTO);
-        
+
         res.status(HttpStatus.OK).json({
             message: 'Examen reactivado correctamente',
             examen
-        });      
-  
+        });
+
     }
 
     // Eliminar examen
@@ -168,7 +180,7 @@ export class ExamenesController {
         const examen = await this.examenesService.eliminarExamen(examenID)
         res.status(HttpStatus.OK).json({
             message: 'Examen eliminado correctamente'
-        }); 
+        });
     }
 
 }
