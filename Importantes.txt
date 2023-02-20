@@ -1,6 +1,6 @@
 - Ruta de las imagenes
 - Al subir cambiar la ruta ./public/img por ../public/img en "imagenes.controller.ts"
-- Al subir ajustar las variables de produccion en "examenes.service.ts" y "formulario-practica.service.ts"
+- Al subir ajustar las variables de entorno
 
 - Inicializacion de preguntas
 - Al subir, inicializar preguntas en modo desarrollador desde servidor
