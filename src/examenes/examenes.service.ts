@@ -933,8 +933,6 @@ export class ExamenesService {
 
         const estadisticas = await this.examenModel.aggregate(pipeline);
 
-        console.log(estadisticas);
-
         return {
             total_examenes: estadisticas.length !== 0 ? estadisticas[0].total_examenes : 0,
             examenes_aprobados: estadisticas.length !== 0 ? estadisticas[0].examenes_aprobados : 0,

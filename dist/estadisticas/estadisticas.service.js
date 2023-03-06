@@ -32,19 +32,6 @@ let EstadisticasService = class EstadisticasService {
             pipeline.push({ $match: filtroActivo });
             pipelineTotal.push({ $match: filtroActivo });
         }
-        if (parametro && parametro !== '') {
-            const porPartes = parametro.split(' ');
-            let parametroFinal = '';
-            for (var i = 0; i < porPartes.length; i++) {
-                if (i > 0)
-                    parametroFinal = parametroFinal + porPartes[i] + '.*';
-                else
-                    parametroFinal = porPartes[i] + '.*';
-            }
-            const regex = new RegExp(parametroFinal, 'i');
-            pipeline.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
-            pipelineTotal.push({ $match: { $or: [{ numero: Number(parametro) }, { descripcion: regex }] } });
-        }
         pipeline.push({
             $lookup: {
                 from: 'examenes',
@@ -63,7 +50,37 @@ let EstadisticasService = class EstadisticasService {
             }
         });
         pipeline.push({ $unwind: '$pregunta' });
+        pipelineTotal.push({
+            $lookup: {
+                from: 'preguntas',
+                localField: 'pregunta',
+                foreignField: '_id',
+                as: 'pregunta'
+            }
+        });
+        pipelineTotal.push({ $unwind: '$pregunta' });
+        if (parametro && parametro !== '') {
+            const porPartes = parametro.split(' ');
+            let parametroFinal = '';
+            for (var i = 0; i < porPartes.length; i++) {
+                if (i > 0)
+                    parametroFinal = parametroFinal + porPartes[i] + '.*';
+                else
+                    parametroFinal = porPartes[i] + '.*';
+            }
+            const regex = new RegExp(parametroFinal, 'i');
+            pipeline.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
+            pipelineTotal.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
+        }
         pipeline.push({
+            $group: {
+                _id: { pregunta: "$pregunta" },
+                cantidad_correctas: { $sum: { $cond: [{ $eq: ["$correcta", true] }, 1, 0] } },
+                cantidad_incorrectas: { $sum: { $cond: [{ $eq: ["$correcta", false] }, 1, 0] } },
+                cantidad_total: { $sum: 1 }
+            }
+        });
+        pipelineTotal.push({
             $group: {
                 _id: { pregunta: "$pregunta" },
                 cantidad_correctas: { $sum: { $cond: [{ $eq: ["$correcta", true] }, 1, 0] } },
