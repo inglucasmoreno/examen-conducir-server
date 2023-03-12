@@ -27,7 +27,6 @@ let SigemController = class SigemController {
         });
     }
     async getPersona(res, data) {
-        console.log(data);
         const { persona, success } = await this.sigemService.getPersona(data);
         res.status(common_1.HttpStatus.OK).json({
             persona,

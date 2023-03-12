@@ -206,7 +206,7 @@ let FormularioPracticaService = class FormularioPracticaService {
     async crearFormulario(formularioPracticaDTO, querys) {
         const { nro_tramite, apellido, nombre, dni, tipo, userCreator } = querys;
         const formularios = await this.formularioPracticaModel.find()
-            .sort({ createdAt: -1 })
+            .sort({ nro_formulario: -1 })
             .limit(1);
         let nro_formulario = 0;
         let nro_formulario_string = '';

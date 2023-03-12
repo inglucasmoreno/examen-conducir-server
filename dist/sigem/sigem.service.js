@@ -50,7 +50,6 @@ let SigemService = class SigemService {
                     userUpdator: data.updatorUser,
                 };
                 persona = await this.personasModel.findOneAndUpdate({ dni }, dataUpdate, { new: true });
-                console.log(persona);
             }
             else {
                 const dataCreator = Object.assign(Object.assign({}, respuesta.data.informacion), { sigem: true, userCreator,

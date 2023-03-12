@@ -445,7 +445,8 @@ let ExamenesService = class ExamenesService {
         }
         let data = examenDTO;
         data.preguntas = preguntasExamen;
-        const examenes = await this.examenModel.find().sort({ createdAt: -1 });
+        const examenes = await this.examenModel.find().sort({ nro_examen: -1 });
+        console.log(examenes);
         let nro_examen = 0;
         let nro_examen_string = '';
         if (examenes.length === 0) {

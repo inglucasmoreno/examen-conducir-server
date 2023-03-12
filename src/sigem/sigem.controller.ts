@@ -19,7 +19,6 @@ export class SigemController {
     // @UseGuards(JwtAuthGuard)
     @Post('/getPersona')
     async getPersona(@Res() res, @Body() data: any) {
-      console.log(data);
       const { persona, success } = await this.sigemService.getPersona(data);
       res.status(HttpStatus.OK).json({
         persona,

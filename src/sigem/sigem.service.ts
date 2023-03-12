@@ -52,7 +52,6 @@ export class SigemService {
           }
   
           persona = await this.personasModel.findOneAndUpdate({ dni }, dataUpdate, {new: true});
-          console.log(persona);
   
         }else{ // Se crea el usuario en el sistema
   
