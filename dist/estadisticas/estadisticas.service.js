@@ -15,32 +15,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstadisticasService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const date_fns_1 = require("date-fns");
 const mongoose_2 = require("mongoose");
 let EstadisticasService = class EstadisticasService {
     constructor(estPreguntasModel) {
         this.estPreguntasModel = estPreguntasModel;
     }
     async preguntas(querys) {
-        const { columna, direccion, desde, registerpp, activo, parametro, } = querys;
+        const { columna, direccion, desde, registerpp, activo, parametro, fechaDesde, fechaHasta } = querys;
         let pipeline = [];
-        let pipelineTotal = [];
         pipeline.push({ $match: {} });
-        pipelineTotal.push({ $match: {} });
-        let filtroActivo = {};
-        if (activo && activo !== '') {
-            filtroActivo = { activo: activo === 'true' ? true : false };
-            pipeline.push({ $match: filtroActivo });
-            pipelineTotal.push({ $match: filtroActivo });
+        if (fechaDesde && fechaDesde.trim() !== '') {
+            pipeline.push({
+                $match: {
+                    createdAt: { $gte: (0, date_fns_1.add)(new Date(fechaDesde), { hours: 0 }) }
+                }
+            });
         }
-        pipeline.push({
-            $lookup: {
-                from: 'examenes',
-                localField: 'examen',
-                foreignField: '_id',
-                as: 'examen'
-            }
-        });
-        pipeline.push({ $unwind: '$examen' });
+        if (fechaHasta && fechaHasta.trim() !== '') {
+            pipeline.push({
+                $match: {
+                    createdAt: { $lte: (0, date_fns_1.add)(new Date(fechaHasta), { days: 1, hours: 0 }) }
+                }
+            });
+        }
         pipeline.push({
             $lookup: {
                 from: 'preguntas',
@@ -50,15 +48,6 @@ let EstadisticasService = class EstadisticasService {
             }
         });
         pipeline.push({ $unwind: '$pregunta' });
-        pipelineTotal.push({
-            $lookup: {
-                from: 'preguntas',
-                localField: 'pregunta',
-                foreignField: '_id',
-                as: 'pregunta'
-            }
-        });
-        pipelineTotal.push({ $unwind: '$pregunta' });
         if (parametro && parametro !== '') {
             const porPartes = parametro.split(' ');
             let parametroFinal = '';
@@ -70,17 +59,8 @@ let EstadisticasService = class EstadisticasService {
             }
             const regex = new RegExp(parametroFinal, 'i');
             pipeline.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
-            pipelineTotal.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
         }
         pipeline.push({
-            $group: {
-                _id: { pregunta: "$pregunta" },
-                cantidad_correctas: { $sum: { $cond: [{ $eq: ["$correcta", true] }, 1, 0] } },
-                cantidad_incorrectas: { $sum: { $cond: [{ $eq: ["$correcta", false] }, 1, 0] } },
-                cantidad_total: { $sum: 1 }
-            }
-        });
-        pipelineTotal.push({
             $group: {
                 _id: { pregunta: "$pregunta" },
                 cantidad_correctas: { $sum: { $cond: [{ $eq: ["$correcta", true] }, 1, 0] } },
@@ -94,13 +74,56 @@ let EstadisticasService = class EstadisticasService {
             pipeline.push({ $sort: ordenar });
         }
         pipeline.push({ $skip: Number(desde) }, { $limit: Number(registerpp) });
-        const [estadisticas, estadisticasTotal] = await Promise.all([
+        const [estadisticas] = await Promise.all([
             this.estPreguntasModel.aggregate(pipeline),
-            this.estPreguntasModel.aggregate(pipelineTotal),
         ]);
+        estadisticas.map(estadistica => {
+            estadistica.porcentaje_correctas = (estadistica.cantidad_correctas / estadistica.cantidad_total) * 100;
+            estadistica.porcentaje_incorrectas = (estadistica.cantidad_incorrectas / estadistica.cantidad_total) * 100;
+        });
+        if (columna === 'porcentaje_correctas' && direccion === '-1') {
+            estadisticas.sort(function (a, b) {
+                if (a.porcentaje_correctas < b.porcentaje_correctas)
+                    return -1;
+                else if (a.porcentajcorrectas > b.porcentaje_correctas)
+                    return 1;
+                else
+                    return 0;
+            });
+        }
+        else if (columna === 'porcentaje_correctas' && direccion === '1') {
+            estadisticas.sort(function (a, b) {
+                if (a.porcentaje_correctas > b.porcentaje_correctas)
+                    return -1;
+                else if (a.porcentaje_correctas < b.porcentaje_correctas)
+                    return 1;
+                else
+                    return 0;
+            });
+        }
+        else if (columna === 'porcentaje_incorrectas' && direccion === '-1') {
+            estadisticas.sort(function (a, b) {
+                if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
+                    return -1;
+                else if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
+                    return 1;
+                else
+                    return 0;
+            });
+        }
+        else if (columna === 'porcentaje_incorrectas' && direccion === '1') {
+            estadisticas.sort(function (a, b) {
+                if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
+                    return -1;
+                else if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
+                    return 1;
+                else
+                    return 0;
+            });
+        }
         return {
             estadisticas,
-            totalItems: estadisticasTotal.length
+            totalItems: estadisticas.length
         };
     }
 };
