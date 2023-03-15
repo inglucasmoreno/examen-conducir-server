@@ -70,21 +70,21 @@ export class EstadisticasService {
         // pipelineTotal.push({$unwind: '$pregunta'}); 
 
         // Filtro por parametros
-        if (parametro && parametro !== '') {
+        // if (parametro && parametro !== '') {
 
-            const porPartes = parametro.split(' ');
-            let parametroFinal = '';
+        //     const porPartes = parametro.split(' ');
+        //     let parametroFinal = '';
 
-            for (var i = 0; i < porPartes.length; i++) {
-                if (i > 0) parametroFinal = parametroFinal + porPartes[i] + '.*';
-                else parametroFinal = porPartes[i] + '.*';
-            }
+        //     for (var i = 0; i < porPartes.length; i++) {
+        //         if (i > 0) parametroFinal = parametroFinal + porPartes[i] + '.*';
+        //         else parametroFinal = porPartes[i] + '.*';
+        //     }
 
-            const regex = new RegExp(parametroFinal, 'i');
-            pipeline.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
-            // pipelineTotal.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex } ] } });
+        //     const regex = new RegExp(parametroFinal, 'i');
+        //     pipeline.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
+        //     // pipelineTotal.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex } ] } });
 
-        }
+        // }
 
         // GROUP
         pipeline.push({
@@ -120,63 +120,63 @@ export class EstadisticasService {
         ]);
 
         // Se genera el procentaje
-        estadisticas.map( estadistica => {
-            estadistica.porcentaje_correctas = (estadistica.cantidad_correctas / estadistica.cantidad_total) * 100; 
-            estadistica.porcentaje_incorrectas = (estadistica.cantidad_incorrectas / estadistica.cantidad_total) * 100; 
-        })
+        // estadisticas.map( estadistica => {
+        //     estadistica.porcentaje_correctas = (estadistica.cantidad_correctas / estadistica.cantidad_total) * 100; 
+        //     estadistica.porcentaje_incorrectas = (estadistica.cantidad_incorrectas / estadistica.cantidad_total) * 100; 
+        // })
 
-        if(columna === 'porcentaje_correctas' && direccion === '-1'){
-            estadisticas.sort(function (a, b) {
-                // A va primero que B
-                if (a.porcentaje_correctas < b.porcentaje_correctas)
-                  return -1;
-                // B va primero que A
-                else if (a.porcentajcorrectas > b.porcentaje_correctas)
-                  return 1;
-                // A y B son iguales
-                else
-                  return 0;
-              });
-        } 
-        else if(columna === 'porcentaje_correctas' && direccion === '1'){
-            estadisticas.sort(function (a, b) {
-                // A va primero que B
-                if (a.porcentaje_correctas > b.porcentaje_correctas)
-                  return -1;
-                // B va primero que A
-                else if (a.porcentaje_correctas < b.porcentaje_correctas)
-                  return 1;
-                // A y B son iguales
-                else
-                  return 0;
-              });
-        }
-        else if(columna === 'porcentaje_incorrectas' && direccion === '-1'){
-            estadisticas.sort(function (a, b) {
-                // A va primero que B
-                if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
-                  return -1;
-                // B va primero que A
-                else if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
-                  return 1;
-                // A y B son iguales
-                else
-                  return 0;
-              });
-        }
-        else if(columna === 'porcentaje_incorrectas' && direccion === '1'){
-            estadisticas.sort(function (a, b) {
-                // A va primero que B
-                if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
-                  return -1;
-                // B va primero que A
-                else if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
-                  return 1;
-                // A y B son iguales
-                else
-                  return 0;
-              });
-        }
+        // if(columna === 'porcentaje_correctas' && direccion === '-1'){
+        //     estadisticas.sort(function (a, b) {
+        //         // A va primero que B
+        //         if (a.porcentaje_correctas < b.porcentaje_correctas)
+        //           return -1;
+        //         // B va primero que A
+        //         else if (a.porcentajcorrectas > b.porcentaje_correctas)
+        //           return 1;
+        //         // A y B son iguales
+        //         else
+        //           return 0;
+        //       });
+        // } 
+        // else if(columna === 'porcentaje_correctas' && direccion === '1'){
+        //     estadisticas.sort(function (a, b) {
+        //         // A va primero que B
+        //         if (a.porcentaje_correctas > b.porcentaje_correctas)
+        //           return -1;
+        //         // B va primero que A
+        //         else if (a.porcentaje_correctas < b.porcentaje_correctas)
+        //           return 1;
+        //         // A y B son iguales
+        //         else
+        //           return 0;
+        //       });
+        // }
+        // else if(columna === 'porcentaje_incorrectas' && direccion === '-1'){
+        //     estadisticas.sort(function (a, b) {
+        //         // A va primero que B
+        //         if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
+        //           return -1;
+        //         // B va primero que A
+        //         else if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
+        //           return 1;
+        //         // A y B son iguales
+        //         else
+        //           return 0;
+        //       });
+        // }
+        // else if(columna === 'porcentaje_incorrectas' && direccion === '1'){
+        //     estadisticas.sort(function (a, b) {
+        //         // A va primero que B
+        //         if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
+        //           return -1;
+        //         // B va primero que A
+        //         else if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
+        //           return 1;
+        //         // A y B son iguales
+        //         else
+        //           return 0;
+        //       });
+        // }
 
         return {
             estadisticas,

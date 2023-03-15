@@ -48,18 +48,6 @@ let EstadisticasService = class EstadisticasService {
             }
         });
         pipeline.push({ $unwind: '$pregunta' });
-        if (parametro && parametro !== '') {
-            const porPartes = parametro.split(' ');
-            let parametroFinal = '';
-            for (var i = 0; i < porPartes.length; i++) {
-                if (i > 0)
-                    parametroFinal = parametroFinal + porPartes[i] + '.*';
-                else
-                    parametroFinal = porPartes[i] + '.*';
-            }
-            const regex = new RegExp(parametroFinal, 'i');
-            pipeline.push({ $match: { $or: [{ 'pregunta.numero': Number(parametro) }, { 'pregunta.descripcion': regex }] } });
-        }
         pipeline.push({
             $group: {
                 _id: { pregunta: "$pregunta" },
@@ -77,50 +65,6 @@ let EstadisticasService = class EstadisticasService {
         const [estadisticas] = await Promise.all([
             this.estPreguntasModel.aggregate(pipeline),
         ]);
-        estadisticas.map(estadistica => {
-            estadistica.porcentaje_correctas = (estadistica.cantidad_correctas / estadistica.cantidad_total) * 100;
-            estadistica.porcentaje_incorrectas = (estadistica.cantidad_incorrectas / estadistica.cantidad_total) * 100;
-        });
-        if (columna === 'porcentaje_correctas' && direccion === '-1') {
-            estadisticas.sort(function (a, b) {
-                if (a.porcentaje_correctas < b.porcentaje_correctas)
-                    return -1;
-                else if (a.porcentajcorrectas > b.porcentaje_correctas)
-                    return 1;
-                else
-                    return 0;
-            });
-        }
-        else if (columna === 'porcentaje_correctas' && direccion === '1') {
-            estadisticas.sort(function (a, b) {
-                if (a.porcentaje_correctas > b.porcentaje_correctas)
-                    return -1;
-                else if (a.porcentaje_correctas < b.porcentaje_correctas)
-                    return 1;
-                else
-                    return 0;
-            });
-        }
-        else if (columna === 'porcentaje_incorrectas' && direccion === '-1') {
-            estadisticas.sort(function (a, b) {
-                if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
-                    return -1;
-                else if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
-                    return 1;
-                else
-                    return 0;
-            });
-        }
-        else if (columna === 'porcentaje_incorrectas' && direccion === '1') {
-            estadisticas.sort(function (a, b) {
-                if (a.porcentaje_incorrectas > b.porcentaje_incorrectas)
-                    return -1;
-                else if (a.porcentaje_incorrectas < b.porcentaje_incorrectas)
-                    return 1;
-                else
-                    return 0;
-            });
-        }
         return {
             estadisticas,
             totalItems: estadisticas.length
