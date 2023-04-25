@@ -702,9 +702,7 @@ export class ExamenesService {
 
         // Numero de examen
         // const examenes = await this.listarExamenes({columna: 'createdAt', direccion: -1});
-        const examenes = await this.examenModel.find().sort({ nro_examen: -1 });
-
-        console.log(examenes);
+        const examenes = await this.examenModel.find().sort({ nro_examen: -1 }).limit(1);
 
         let nro_examen = 0;
         let nro_examen_string = '';
