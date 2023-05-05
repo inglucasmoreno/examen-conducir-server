@@ -513,7 +513,8 @@ export class ExamenesService {
         // Examen particular (A y B) = 50 preguntas
         // Examen profesional (C, D y E) = 60 preguntas
         // Examen profesional (G) = 14 preguntas
-        // Examen profesional (H) = 17 preguntas
+        // Examen profesional (J -> E2) = 14 preguntas
+        // Examen profesional (H -> D4) = 17 preguntas
 
         let cantidadPreguntas: number = 0;
 
@@ -523,19 +524,41 @@ export class ExamenesService {
         else if (examenDTO.tipo_licencia === 'J') cantidadPreguntas = 14; // J - E2
         else if (examenDTO.tipo_licencia === 'H') cantidadPreguntas = 17; // H - D4
 
-        // Cantidad de preguntas por peso
-        let cantidad_6 = 0;
-        let cantidad_5 = Math.ceil(cantidadPreguntas * 0.35);                                           // Peso 5
-        let cantidad_4 = Math.ceil(cantidadPreguntas * 0.25);                                           // Peso 4
-        let cantidad_3 = Math.ceil(cantidadPreguntas * 0.20);                                           // Peso 3
-        let cantidad_2 = Math.ceil(cantidadPreguntas * 0.15);                                           // Peso 2
-        let cantidad_1 = cantidadPreguntas - (cantidad_5 + cantidad_4 + cantidad_3 + cantidad_2);       // Peso 1
-
-        // Se obtienen arreglos con preguntas dependiendo de su ponderacion
+        console.log(`Preguntas examen -> ${cantidadPreguntas}`);
 
         // Arreglo de preguntas de peso 6
         let preguntas_frecuencia_6 = preguntas.filter(pregunta => (pregunta.frecuencia == 6));
         let cantidadTotal_6 = preguntas_frecuencia_6.length;
+
+        const cantidadPreguntasTMP = cantidadPreguntas - cantidadTotal_6 <= 0 ? 0 : cantidadPreguntas - cantidadTotal_6;
+
+        console.log(`Total obligatorias -> ${cantidadTotal_6}`)
+        console.log(`Cantidad preguntas TMP -> ${cantidadPreguntasTMP}`)
+
+        // Cantidad de preguntas por peso
+        // let cantidad_6 = 0;                                                                             // Obligatorias
+        // let cantidad_5 = Math.ceil(cantidadPreguntas * 0.35);                                           // Peso 5
+        // let cantidad_4 = Math.ceil(cantidadPreguntas * 0.25);                                           // Peso 4
+        // let cantidad_3 = Math.ceil(cantidadPreguntas * 0.20);                                           // Peso 3
+        // let cantidad_2 = Math.ceil(cantidadPreguntas * 0.15);                                           // Peso 2
+        // let cantidad_1 = cantidadPreguntas - (cantidad_5 + cantidad_4 + cantidad_3 + cantidad_2);       // Peso 1
+
+        // Cantidad de preguntas por peso
+        let cantidad_6 = cantidadTotal_6 > cantidadPreguntas ? cantidadPreguntas : cantidadTotal_6;              
+        let cantidad_5 = Math.round(cantidadPreguntasTMP * 0.35);                                           // Peso 5
+        let cantidad_4 = Math.round(cantidadPreguntasTMP * 0.25);                                           // Peso 4
+        let cantidad_3 = Math.round(cantidadPreguntasTMP * 0.20);                                           // Peso 3
+        let cantidad_2 = Math.round(cantidadPreguntasTMP * 0.15);                                           // Peso 2
+        let cantidad_1 = cantidadPreguntasTMP - (cantidad_5 + cantidad_4 + cantidad_3 + cantidad_2);        // Peso 1
+
+        console.log('Cantidades antes de adaptar');
+        console.log(`Cantidad total 5 - ${cantidad_5}`)
+        console.log(`Cantidad total 4 - ${cantidad_4}`)
+        console.log(`Cantidad total 3 - ${cantidad_3}`)
+        console.log(`Cantidad total 2 - ${cantidad_2}`)
+        console.log(`Cantidad total 1 - ${cantidad_1}`)
+
+        // Se obtienen arreglos con preguntas dependiendo de su ponderacion
 
         // Arreglo de preguntas de peso 5
         let preguntas_frecuencia_5 = preguntas.filter(pregunta => (pregunta.frecuencia == 5));
@@ -557,12 +580,15 @@ export class ExamenesService {
         let preguntas_frecuencia_1 = preguntas.filter(pregunta => (pregunta.frecuencia === 1));
         let cantidadTotal_1 = preguntas_frecuencia_1.length;
 
-        // Adaptacion de cantidades
+        console.log('Cantidades Totales')
+        console.log(`Obligatorias -> ${cantidadTotal_6}`);
+        console.log(`Peso 5 -> ${cantidadTotal_5}`);
+        console.log(`Peso 4 -> ${cantidadTotal_4}`);
+        console.log(`Peso 3 -> ${cantidadTotal_3}`);
+        console.log(`Peso 2 -> ${cantidadTotal_2}`);
+        console.log(`Peso 1 -> ${cantidadTotal_1}`);
 
-        if (cantidadTotal_6 > 0) {
-            cantidad_6 = cantidadTotal_6;
-            cantidad_4 = cantidad_4 - cantidadTotal_6;
-        }
+        // Adaptacion de cantidades
 
         if (cantidadTotal_5 < cantidad_5) {
             const diff = cantidad_5 - cantidadTotal_5;
@@ -588,8 +614,17 @@ export class ExamenesService {
             cantidad_1 = cantidad_1 + diff;
         }
 
+        console.log('Totales para el examen');
+        console.log(`Cantidad total obligatorias - ${cantidad_6}`)
+        console.log(`Cantidad total 5 - ${cantidad_5}`)
+        console.log(`Cantidad total 4 - ${cantidad_4}`)
+        console.log(`Cantidad total 3 - ${cantidad_3}`)
+        console.log(`Cantidad total 2 - ${cantidad_2}`)
+        console.log(`Cantidad total 1 - ${cantidad_1}`)
+
+
         // Preguntas de peso 6 - OBLIGATORIAS
-        if (cantidadTotal_6 > 0) {
+        if (cantidad_6 > 0) {
             for (var i = 0; i < cantidad_6; i++) {
 
                 const nroAleatorio = Math.floor(Math.random() * cantidadTotal_6); // Numero aleatorio [0 - preguntas.length]
