@@ -512,28 +512,24 @@ export class ExamenesService {
         // Cantidad de preguntas dependiendo del tipo de examen
         // Examen particular (A y B) = 50 preguntas
         // Examen profesional (C, D y E) = 60 preguntas
-        // Examen profesional (G) = 14 preguntas
-        // Examen profesional (J -> E2) = 14 preguntas
-        // Examen profesional (H -> D4) = 17 preguntas
+        // Examen profesional (G) = 14 preguntas (Ahora 60)
+        // Examen profesional (J -> E2) = 14 preguntas (Ahora 60)
+        // Examen profesional (H -> D4) = 17 preguntas (Ahora 60)
 
         let cantidadPreguntas: number = 0;
 
         if (examenDTO.tipo_licencia === 'A' || examenDTO.tipo_licencia === 'B') cantidadPreguntas = 50;
         else if (examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E') cantidadPreguntas = 60;
-        else if (examenDTO.tipo_licencia === 'G') cantidadPreguntas = 14;
-        else if (examenDTO.tipo_licencia === 'J') cantidadPreguntas = 14; // J - E2
-        else if (examenDTO.tipo_licencia === 'H') cantidadPreguntas = 17; // H - D4
+        else if (examenDTO.tipo_licencia === 'G') cantidadPreguntas = 60;
+        else if (examenDTO.tipo_licencia === 'J') cantidadPreguntas = 60; // J - E2
+        else if (examenDTO.tipo_licencia === 'H') cantidadPreguntas = 60; // H - D4
 
-        console.log(`Preguntas examen -> ${cantidadPreguntas}`);
 
         // Arreglo de preguntas de peso 6
         let preguntas_frecuencia_6 = preguntas.filter(pregunta => (pregunta.frecuencia == 6));
         let cantidadTotal_6 = preguntas_frecuencia_6.length;
 
         const cantidadPreguntasTMP = cantidadPreguntas - cantidadTotal_6 <= 0 ? 0 : cantidadPreguntas - cantidadTotal_6;
-
-        console.log(`Total obligatorias -> ${cantidadTotal_6}`)
-        console.log(`Cantidad preguntas TMP -> ${cantidadPreguntasTMP}`)
 
         // Cantidad de preguntas por peso
         // let cantidad_6 = 0;                                                                             // Obligatorias
@@ -551,12 +547,6 @@ export class ExamenesService {
         let cantidad_2 = Math.round(cantidadPreguntasTMP * 0.15);                                           // Peso 2
         let cantidad_1 = cantidadPreguntasTMP - (cantidad_5 + cantidad_4 + cantidad_3 + cantidad_2);        // Peso 1
 
-        console.log('Cantidades antes de adaptar');
-        console.log(`Cantidad total 5 - ${cantidad_5}`)
-        console.log(`Cantidad total 4 - ${cantidad_4}`)
-        console.log(`Cantidad total 3 - ${cantidad_3}`)
-        console.log(`Cantidad total 2 - ${cantidad_2}`)
-        console.log(`Cantidad total 1 - ${cantidad_1}`)
 
         // Se obtienen arreglos con preguntas dependiendo de su ponderacion
 
@@ -579,14 +569,6 @@ export class ExamenesService {
         // Arreglo de preguntas de peso 1 y 2
         let preguntas_frecuencia_1 = preguntas.filter(pregunta => (pregunta.frecuencia === 1));
         let cantidadTotal_1 = preguntas_frecuencia_1.length;
-
-        console.log('Cantidades Totales')
-        console.log(`Obligatorias -> ${cantidadTotal_6}`);
-        console.log(`Peso 5 -> ${cantidadTotal_5}`);
-        console.log(`Peso 4 -> ${cantidadTotal_4}`);
-        console.log(`Peso 3 -> ${cantidadTotal_3}`);
-        console.log(`Peso 2 -> ${cantidadTotal_2}`);
-        console.log(`Peso 1 -> ${cantidadTotal_1}`);
 
         // Adaptacion de cantidades
 
@@ -613,15 +595,6 @@ export class ExamenesService {
             cantidad_2 = cantidad_2 - diff;
             cantidad_1 = cantidad_1 + diff;
         }
-
-        console.log('Totales para el examen');
-        console.log(`Cantidad total obligatorias - ${cantidad_6}`)
-        console.log(`Cantidad total 5 - ${cantidad_5}`)
-        console.log(`Cantidad total 4 - ${cantidad_4}`)
-        console.log(`Cantidad total 3 - ${cantidad_3}`)
-        console.log(`Cantidad total 2 - ${cantidad_2}`)
-        console.log(`Cantidad total 1 - ${cantidad_1}`)
-
 
         // Preguntas de peso 6 - OBLIGATORIAS
         if (cantidad_6 > 0) {
@@ -859,9 +832,9 @@ export class ExamenesService {
 
         if ((examenDB.tipo_licencia === 'A' || examenDB.tipo_licencia === 'B') && cantidad_correctas >= 45) examenUpdateDTO.aprobado = true; // (45/50 == 90%)
         if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (54/60 == 90%)
-        if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
-        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 13) examenUpdateDTO.aprobado = true; // (13/14 == 90%) // J -> E2
-        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16) examenUpdateDTO.aprobado = true; // (16/17 == 90%) // H -> D4
+        if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (13/14 == 90%)
+        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (13/14 == 90%) // J -> E2
+        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 54) examenUpdateDTO.aprobado = true; // (16/17 == 90%) // H -> D4
 
         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;

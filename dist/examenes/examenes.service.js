@@ -340,29 +340,20 @@ let ExamenesService = class ExamenesService {
         else if (examenDTO.tipo_licencia === 'C' || examenDTO.tipo_licencia === 'D' || examenDTO.tipo_licencia === 'E')
             cantidadPreguntas = 60;
         else if (examenDTO.tipo_licencia === 'G')
-            cantidadPreguntas = 14;
+            cantidadPreguntas = 60;
         else if (examenDTO.tipo_licencia === 'J')
-            cantidadPreguntas = 14;
+            cantidadPreguntas = 60;
         else if (examenDTO.tipo_licencia === 'H')
-            cantidadPreguntas = 17;
-        console.log(`Preguntas examen -> ${cantidadPreguntas}`);
+            cantidadPreguntas = 60;
         let preguntas_frecuencia_6 = preguntas.filter(pregunta => (pregunta.frecuencia == 6));
         let cantidadTotal_6 = preguntas_frecuencia_6.length;
         const cantidadPreguntasTMP = cantidadPreguntas - cantidadTotal_6 <= 0 ? 0 : cantidadPreguntas - cantidadTotal_6;
-        console.log(`Total obligatorias -> ${cantidadTotal_6}`);
-        console.log(`Cantidad preguntas TMP -> ${cantidadPreguntasTMP}`);
         let cantidad_6 = cantidadTotal_6 > cantidadPreguntas ? cantidadPreguntas : cantidadTotal_6;
         let cantidad_5 = Math.round(cantidadPreguntasTMP * 0.35);
         let cantidad_4 = Math.round(cantidadPreguntasTMP * 0.25);
         let cantidad_3 = Math.round(cantidadPreguntasTMP * 0.20);
         let cantidad_2 = Math.round(cantidadPreguntasTMP * 0.15);
         let cantidad_1 = cantidadPreguntasTMP - (cantidad_5 + cantidad_4 + cantidad_3 + cantidad_2);
-        console.log('Cantidades antes de adaptar');
-        console.log(`Cantidad total 5 - ${cantidad_5}`);
-        console.log(`Cantidad total 4 - ${cantidad_4}`);
-        console.log(`Cantidad total 3 - ${cantidad_3}`);
-        console.log(`Cantidad total 2 - ${cantidad_2}`);
-        console.log(`Cantidad total 1 - ${cantidad_1}`);
         let preguntas_frecuencia_5 = preguntas.filter(pregunta => (pregunta.frecuencia == 5));
         let cantidadTotal_5 = preguntas_frecuencia_5.length;
         let preguntas_frecuencia_4 = preguntas.filter(pregunta => (pregunta.frecuencia === 4));
@@ -373,13 +364,6 @@ let ExamenesService = class ExamenesService {
         let cantidadTotal_2 = preguntas_frecuencia_2.length;
         let preguntas_frecuencia_1 = preguntas.filter(pregunta => (pregunta.frecuencia === 1));
         let cantidadTotal_1 = preguntas_frecuencia_1.length;
-        console.log('Cantidades Totales');
-        console.log(`Obligatorias -> ${cantidadTotal_6}`);
-        console.log(`Peso 5 -> ${cantidadTotal_5}`);
-        console.log(`Peso 4 -> ${cantidadTotal_4}`);
-        console.log(`Peso 3 -> ${cantidadTotal_3}`);
-        console.log(`Peso 2 -> ${cantidadTotal_2}`);
-        console.log(`Peso 1 -> ${cantidadTotal_1}`);
         if (cantidadTotal_5 < cantidad_5) {
             const diff = cantidad_5 - cantidadTotal_5;
             cantidad_5 = cantidad_5 - diff;
@@ -400,13 +384,6 @@ let ExamenesService = class ExamenesService {
             cantidad_2 = cantidad_2 - diff;
             cantidad_1 = cantidad_1 + diff;
         }
-        console.log('Totales para el examen');
-        console.log(`Cantidad total obligatorias - ${cantidad_6}`);
-        console.log(`Cantidad total 5 - ${cantidad_5}`);
-        console.log(`Cantidad total 4 - ${cantidad_4}`);
-        console.log(`Cantidad total 3 - ${cantidad_3}`);
-        console.log(`Cantidad total 2 - ${cantidad_2}`);
-        console.log(`Cantidad total 1 - ${cantidad_1}`);
         if (cantidad_6 > 0) {
             for (var i = 0; i < cantidad_6; i++) {
                 const nroAleatorio = Math.floor(Math.random() * cantidadTotal_6);
@@ -549,11 +526,11 @@ let ExamenesService = class ExamenesService {
             examenUpdateDTO.aprobado = true;
         if ((examenDB.tipo_licencia === 'C' || examenDB.tipo_licencia === 'D' || examenDB.tipo_licencia === 'E') && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
-        if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 13)
+        if (examenDB.tipo_licencia === 'G' && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
-        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 13)
+        if (examenDB.tipo_licencia === 'J' && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
-        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 16)
+        if (examenDB.tipo_licencia === 'H' && cantidad_correctas >= 54)
             examenUpdateDTO.aprobado = true;
         examenUpdateDTO.cantidad_respuestas_correctas = cantidad_correctas;
         examenUpdateDTO.cantidad_respuestas_incorrectas = cantidad_incorrectas;
